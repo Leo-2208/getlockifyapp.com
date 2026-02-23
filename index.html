@@ -1,218 +1,1034 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Privacy Policy – Lockify</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.6;
-            margin: 24px;
-            max-width: 900px;
-        }
-        h1, h2 {
-            color: #222;
-        }
-        h1 {
-            margin-bottom: 0;
-        }
-        .date {
-            color: #555;
-            margin-bottom: 24px;
-        }
-        ul {
-            margin-left: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lockify – Local Encrypted Vault</title>
+  <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline. No analytics. No cloud. Your files, only yours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #3dd9a4;
+      --teal-dim: #2ab888;
+      --teal-glow: rgba(61, 217, 164, 0.15);
+      --bg: #0c0e0d;
+      --bg2: #131615;
+      --card: #161917;
+      --card-border: rgba(61, 217, 164, 0.1);
+      --text: #e4eae5;
+      --text-muted: #768a7c;
+      --text-dim: #3f5245;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    /* No noise overlay — solid background for clean rendering */
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(12,14,13,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(61,217,164,0.07);
+    }
+
+    .nav-logo img {
+      height: 26px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--teal); }
+
+    .nav-cta {
+      background: var(--teal) !important;
+      color: #0c0e0d !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 500 !important;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .nav-cta:hover { opacity: 0.88 !important; transform: translateY(-1px); color: #0c0e0d !important; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 130px 24px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -58%);
+      pointer-events: none;
+    }
+
+    .hero-dots {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(61,217,164,0.18) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, black 20%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.18);
+      border-radius: 100px;
+      padding: 6px 16px 6px 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+      animation: blink 2.5s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity:1; } 50% { opacity: 0.25; }
+    }
+
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.6rem, 6.5vw, 5rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 760px;
+      margin-bottom: 22px;
+      animation: fadeUp 0.55s 0.08s ease both;
+    }
+
+    .hero h1 .accent { color: var(--teal); }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.12rem);
+      color: var(--text-muted);
+      max-width: 500px;
+      margin-bottom: 44px;
+      font-weight: 300;
+      line-height: 1.72;
+      animation: fadeUp 0.55s 0.16s ease both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.55s 0.24s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--teal);
+      color: #0c0e0d;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.92rem;
+      padding: 13px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 48px rgba(61,217,164,0.22);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 0 64px rgba(61,217,164,0.32);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 0.92rem;
+      padding: 13px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.09);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(61,217,164,0.28);
+      color: var(--teal);
+      transform: translateY(-2px);
+    }
+
+    /* ────────────────────────────────────────────────
+       PHONE SHOWCASE
+       Problem: Dark app screenshots on dark bg = invisible
+       Solution:
+       1. Phone frame is notably lighter (#1e2421) than page bg (#0c0e0d)
+       2. A frosted "stage" platform sits behind all phones
+       3. Teal glow border on center phone draws the eye
+       4. Heavy drop shadow separates device from bg
+    ──────────────────────────────────────────────── */
+    .phones-stage {
+      position: relative;
+      margin-top: 64px;
+      padding: 40px 48px 48px;
+      animation: fadeUp 0.7s 0.32s ease both;
+    }
+
+    /* The frosted stage behind the phones */
+    .phones-stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(30,36,33,0.0) 0%, rgba(30,36,33,0.45) 40%, rgba(30,36,33,0.55) 100%);
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .phones-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* The device frame — substantially lighter than the page bg */
+    .phone {
+      background: #252b27;   /* noticeably lighter = contrast against #0c0e0d */
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Status bar strip */
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 26px;
+      background: #1a1f1c;
+      z-index: 2;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* Notch */
+    .phone::after {
+      content: '';
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 52px; height: 11px;
+      background: #0c0e0d;
+      border-radius: 6px;
+      z-index: 3;
+    }
+
+    .phone img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 26px;
+    }
+
+    /* Side phones */
+    .phone-wrap.side {
+      opacity: 0.5;
+      transform: scale(0.87) translateY(24px);
+      transition: opacity 0.35s, transform 0.35s;
+      cursor: pointer;
+    }
+
+    .phone-wrap.side:hover {
+      opacity: 0.7;
+      transform: scale(0.9) translateY(14px);
+    }
+
+    .phone-wrap.side .phone {
+      width: 148px;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    /* Center phone */
+    .phone-wrap.center {
+      z-index: 2;
+      position: relative;
+    }
+
+    .phone-wrap.center .phone {
+      width: 188px;
+      border: 1.5px solid rgba(61,217,164,0.28);
+      background: #2a312d;  /* slightly lighter still for the center hero */
+      box-shadow:
+        0 44px 90px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 0 70px rgba(61,217,164,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    /* Glow beneath center phone */
+    .phone-wrap.center::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px; height: 16px;
+      background: radial-gradient(ellipse, rgba(61,217,164,0.16) 0%, transparent 70%);
+    }
+
+    /* ── STATS ── */
+    .stats-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 880px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+    }
+
+    .stats-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: rgba(20,24,22,0.7);
+      border: 1px solid rgba(61,217,164,0.09);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .stat {
+      padding: 26px 20px;
+      text-align: center;
+    }
+
+    .stat + .stat { border-left: 1px solid rgba(61,217,164,0.07); }
+
+    .stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--teal);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .stat-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── SHARED ── */
+    section { position: relative; z-index: 1; }
+
+    .mono-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    h2.sh {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+      line-height: 1.13;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .sdesc {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      font-weight: 300;
+      line-height: 1.72;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 120px 24px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .feat-hd {
+      text-align: center;
+      max-width: 540px;
+      margin: 0 auto 60px;
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.09);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .feat {
+      background: var(--bg);
+      padding: 34px 26px;
+      transition: background 0.25s;
+    }
+
+    .feat:hover { background: var(--card); }
+
+    .feat-ico {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      background: rgba(61,217,164,0.08);
+      border: 1px solid rgba(61,217,164,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .feat-ico svg {
+      width: 19px; height: 19px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feat h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.98rem;
+      margin-bottom: 8px;
+    }
+
+    .feat p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.68;
+    }
+
+    /* ── STEALTH ── */
+    .stealth {
+      padding: 0 24px 100px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .stealth-card {
+      display: grid;
+      grid-template-columns: 1fr 1.45fr;
+      background: var(--card);
+      border: 1px solid rgba(61,217,164,0.1);
+      border-radius: 22px;
+      overflow: hidden;
+      align-items: stretch;
+    }
+
+    /*
+      Stealth visual: deliberately darker bg (#0f1210) 
+      so the phone's lighter frame (#252b27) pops clearly
+    */
+    .stealth-vis {
+      background: #0f1210;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 36px;
+      position: relative;
+      border-right: 1px solid rgba(61,217,164,0.07);
+    }
+
+    .stealth-vis::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 70% at 50% 65%, rgba(61,217,164,0.07) 0%, transparent 70%);
+    }
+
+    .stealth-vis .phone {
+      width: 162px;
+      border: 1.5px solid rgba(61,217,164,0.28);
+      box-shadow:
+        0 36px 80px rgba(0,0,0,0.9),
+        0 0 72px rgba(61,217,164,0.13),
+        0 0 0 1px rgba(255,255,255,0.04);
+      position: relative;
+      z-index: 1;
+    }
+
+    .stealth-txt {
+      padding: 52px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .stealth-txt h2 { margin-bottom: 16px; }
+
+    .stealth-txt p {
+      font-size: 0.91rem;
+      color: var(--text-muted);
+      line-height: 1.76;
+      margin-bottom: 12px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 22px;
+    }
+
+    .tg {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal);
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.13);
+      padding: 4px 10px;
+      border-radius: 5px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── PLEDGE ── */
+    .pledge {
+      padding: 80px 24px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .pledge-hd {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .pledge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.09);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .pl-item {
+      background: linear-gradient(155deg, #161917 0%, #0f1210 100%);
+      padding: 38px 30px;
+    }
+
+    .pl-n {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.64rem;
+      color: var(--teal);
+      opacity: 0.4;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+    }
+
+    .pl-item h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.98rem;
+      margin-bottom: 9px;
+    }
+
+    .pl-item p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.68;
+    }
+
+    /* ── FAQ ── */
+    .faq {
+      padding: 96px 24px 72px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .faq-hd { text-align: center; margin-bottom: 44px; }
+
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.054); }
+
+    .faq-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.96rem;
+      font-weight: 400;
+      padding: 20px 0;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color 0.2s;
+    }
+
+    .faq-btn:hover { color: var(--teal); }
+
+    .faq-btn svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      flex-shrink: 0;
+      transition: transform 0.28s;
+    }
+
+    .faq-item.open .faq-btn { color: var(--teal); }
+    .faq-item.open .faq-btn svg { transform: rotate(45deg); }
+
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.32s ease;
+    }
+
+    .faq-item.open .faq-body { max-height: 220px; }
+
+    .faq-body p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      padding-bottom: 20px;
+    }
+
+    /* ── CTA ── */
+    .cta-band {
+      padding: 80px 24px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-band::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-band h2 { font-size: clamp(1.9rem, 4.5vw, 3.1rem); margin-bottom: 12px; }
+    .cta-band p { color: var(--text-muted); margin-bottom: 36px; font-size: 0.97rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.045);
+      padding: 34px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a img { height: 20px; width: auto; display: block; }
+
+    .ft-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .ft-links a {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .ft-links a:hover { color: var(--teal); }
+
+    .ft-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.71rem;
+      color: var(--text-dim);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav { padding: 14px 24px; }
+      .nav-links li:not(:last-child) { display: none; }
+      .feat-grid { grid-template-columns: 1fr 1fr; }
+      .stealth-card { grid-template-columns: 1fr; }
+      .stealth-vis { border-right: none; border-bottom: 1px solid rgba(61,217,164,0.07); padding: 36px 24px; }
+      .stealth-txt { padding: 36px 28px; }
+      .pledge-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(3) { border-left: none; border-top: 1px solid rgba(61,217,164,0.07); }
+      footer { padding: 28px 24px; flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+      .feat-grid { grid-template-columns: 1fr; }
+      .phone-wrap.side { display: none; }
+      .phone-wrap.center .phone { width: 210px; }
+      .phones-stage { padding: 28px 24px 36px; }
+    }
+  </style>
 </head>
 <body>
 
-<h1>Privacy Policy for Lockify</h1>
-<p class="date"><strong>Effective date:</strong> 23 January 2026</p>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="Lockify_text.svg" alt="Lockify" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stealth">Stealth Mode</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
 
-<p>
-Lockify is a privacy-first Android application designed to help users securely store and manage files on their device.
-Your privacy is important to us, and this Privacy Policy explains how your data is handled when you use the app.
-</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-dots"></div>
 
-<h2>1. Information We Collect</h2>
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    encrypted vault · android
+  </div>
 
-<p>
-Lockify does not collect data automatically.
-</p>
+  <h1>Your files.<br><span class="accent">Locked tight.</span><br>No exceptions.</h1>
 
-<p>
-The app only processes information that you explicitly provide or choose to use within the app.
-This includes:
-</p>
+  <p class="hero-sub">Lockify is a private, encrypted file vault for Android. Your files stay on your device — encrypted, organized, and always accessible. No fuss.</p>
 
-<h3>a) Files You Choose to Import</h3>
+  <div class="hero-ctas">
+    <a href="#" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
+      Download on Play Store
+    </a>
+    <a href="#features" class="btn-ghost">
+      See features
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  </div>
 
-<p>
-When you import files (such as images, videos, PDFs, or other documents), those files are processed and stored locally
-on your device inside the app’s private storage.
-</p>
+  <!-- PHONE SHOWCASE — cyclic carousel -->
+  <div class="phones-stage">
+    <div class="phones-row" id="phoneCarousel">
+      <div class="phone-wrap side" data-pos="left" onclick="cycleCarousel('left')">
+        <div class="phone">
+          <img src="7.png" alt="Calculator stealth mode" loading="lazy" />
+        </div>
+      </div>
 
-<p>
-These files may contain personal or sensitive information depending on their content.
-Lockify does not analyze or inspect the contents of your files beyond what is required to provide vault functionality.
-</p>
+      <div class="phone-wrap center" data-pos="center">
+        <div class="phone">
+          <img src="1.png" alt="Lockify vault" loading="lazy" />
+        </div>
+      </div>
 
-<h3>b) Authentication and Access Control</h3>
+      <div class="phone-wrap side" data-pos="right" onclick="cycleCarousel('right')">
+        <div class="phone">
+          <img src="3.png" alt="File management" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<p>
-Lockify uses the Android operating system’s secure authentication mechanisms to protect access to the vault.
-</p>
+<!-- STATS -->
+<div class="stats-wrap reveal">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-val">Local</div>
+      <div class="stat-lbl">Storage first</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">AES</div>
+      <div class="stat-lbl">Encryption</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">∞</div>
+      <div class="stat-lbl">Files stored</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">Free</div>
+      <div class="stat-lbl">To download</div>
+    </div>
+  </div>
+</div>
 
-<p>
-Access to the vault always requires biometric authentication or the device’s screen lock credential
-(such as fingerprint, face unlock, or device PIN, pattern, or password). This requirement applies in all modes of operation.
-</p>
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="feat-hd reveal">
+    <span class="mono-tag">Everything you need</span>
+    <h2 class="sh">Seriously private.<br>Seriously capable.</h2>
+    <p class="sdesc">A full-featured vault that respects your privacy by design, not as an afterthought.</p>
+  </div>
 
-<p>
-Lockify does not access, store, or process biometric data or device credentials.
-All biometric and device authentication is handled entirely by the Android operating system.
-Lockify only receives an authentication success or failure result.
-</p>
+  <div class="feat-grid reveal">
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h3>Encrypted Vault</h3>
+      <p>Files are encrypted before being written to storage — invisible to other apps and system file browsers, even with physical device access.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+      <h3>Folders & Organization</h3>
+      <p>Create folders to keep files organized your way. Easy to navigate, rename, and rearrange — all within the secure vault.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg></div>
+      <h3>Recycle Bin</h3>
+      <p>Deleted files land in the bin first, auto-purged after 30 days. A simple safety net for accidental deletions.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h3>Biometric Auth</h3>
+      <p>Unlock with fingerprint or face unlock. Android handles all biometrics — Lockify only receives a pass or fail result.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <h3>In-App File Viewer</h3>
+      <p>View images, videos, and PDFs directly inside the app. Temporary decrypted copies are cleaned up automatically after viewing.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      <h3>No Account to Start</h3>
+      <p>No sign-up, no email required to use the vault. Set a PIN, use biometrics, done. Optional account features may be added in future versions.</p>
+    </div>
+  </div>
+</section>
 
-<p>
-If the user enables calculator stealth mode, an additional calculator-style PIN and gesture are required
-before the system authentication prompt is shown. This calculator PIN acts as an extra access gate and
-does not replace biometric or device credential authentication.
-</p>
+<!-- STEALTH -->
+<section class="stealth" id="stealth">
+  <div class="stealth-card reveal">
+    <div class="stealth-vis">
+      <div class="phone">
+        <img src="7.png" alt="Calculator stealth mode disguise" />
+      </div>
+    </div>
+    <div class="stealth-txt">
+      <span class="mono-tag">Most wanted feature</span>
+      <h2 class="sh">Hide in plain<br><span style="color:var(--teal)">sight.</span></h2>
+      <p>Enable Calculator Stealth Mode and Lockify completely disguises itself as a working calculator on your home screen. No vault icon. No app name. Nothing out of the ordinary.</p>
+      <p>Enter your secret PIN sequence on the calculator to unlock. To everyone else — it's just a calculator app.</p>
+      <div class="tag-row">
+        <span class="tg">Calculator disguise</span>
+        <span class="tg">Custom PIN gate</span>
+        <span class="tg">Icon replacement</span>
+        <span class="tg">Zero trace</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-<p>
-The calculator PIN is stored locally in a secure, cryptographically derived form and is used only to determine
-whether to proceed to system authentication.
-</p>
 
-<p>
-Lockify may present an alternate launcher icon and interface if the user enables stealth mode.
-This does not affect how data is collected, stored, or shared.
-</p>
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="faq-hd reveal">
+    <span class="mono-tag">Questions</span>
+    <h2 class="sh">Good things to know</h2>
+    <p class="sdesc">Everything you'd want to know before trusting Lockify with your files.</p>
+  </div>
+  <div class="reveal">
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">What happens if I forget my PIN?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>Your biometric (fingerprint or face unlock) always works as a fallback to access the vault. If you've forgotten your calculator stealth PIN, there's a reset option accessible from the calculator screen.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">Are my files truly encrypted?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>Yes. Files are encrypted before being written to storage. Even with physical access to device storage, vault files appear as meaningless encrypted data without proper authentication.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">Can I export files out of Lockify?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>Yes. Export any file or open it with another app directly from the vault. Lockify creates a temporary decrypted copy and cleans it up afterwards. Once opened in another app, that app controls the file.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">Does Lockify work without internet?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>Yes — all core vault functionality works without internet. No network connection is needed to encrypt, store, or view your files. The only optional network interaction is Google Play's in-app review prompt, handled entirely by Google Play.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">How does Calculator Stealth Mode work?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>When enabled, Lockify replaces its icon with a calculator icon. Opening the app shows a real, working calculator. Entering your secret PIN sequence triggers biometric authentication and opens your vault. To anyone else, it's just a calculator.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">What file types can I store?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>Any file you can import from your device — images, videos, PDFs, documents, and more. In-app viewing is supported for images, videos, and PDFs. Other types can be exported and opened with compatible apps.</p></div>
+    </div>
+  </div>
+</section>
 
-<h3>c) Optional Profile Information</h3>
+<!-- CTA -->
+<section class="cta-band reveal">
+  <span class="mono-tag">Ready?</span>
+  <h2 class="sh">Your vault awaits.</h2>
+  <p>Free to download. No account required to get started.</p>
+  <a href="#" class="btn-primary" style="margin: 0 auto; display: inline-flex;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
+    Download on Play Store
+  </a>
+</section>
 
-<p>
-You may optionally set a profile name within the app.
-This information is stored locally on your device and is used only for display within the app.
-</p>
+<!-- FOOTER -->
+<footer>
+  <a href="#"><img src="Lockify_text.svg" alt="Lockify" /></a>
+  <ul class="ft-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#b3dfdcd0d8dad5ca9dd7d6c5f3d4ded2dadf9dd0dcde">Contact</a></li>
+  </ul>
+  <span class="ft-copy">© 2026 Lockify. Built for privacy.</span>
+</footer>
 
-<h2>2. Data Stored on Your Device</h2>
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-<p>
-All data used by Lockify is stored locally on your device only.
-</p>
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
 
-<p>This includes:</p>
+  // Phone carousel — cyclic rotation
+  // phones array order: [left, center, right]
+  // clicking left: left→center, center→right, right→left
+  // clicking right: right→center, center→left, left→right
+  function cycleCarousel(direction) {
+    const carousel = document.getElementById('phoneCarousel');
+    const phones = Array.from(carousel.querySelectorAll('.phone-wrap'));
 
-<ul>
-    <li>Encrypted files you import into the vault</li>
-    <li>File metadata (such as file name, size, type, and timestamps)</li>
-    <li>Folder structure information</li>
-    <li>Thumbnail images generated for preview purposes</li>
-    <li>App settings and preferences (such as stealth mode status, warning confirmations, and review prompts)</li>
-</ul>
+    // Find current positions
+    const leftEl   = phones.find(p => p.dataset.pos === 'left');
+    const centerEl = phones.find(p => p.dataset.pos === 'center');
+    const rightEl  = phones.find(p => p.dataset.pos === 'right');
 
-<p>
-Lockify does not upload or synchronize this data to any external servers.
-</p>
+    if (direction === 'left') {
+      // left → center, center → right, right → left
+      leftEl.dataset.pos   = 'center';
+      centerEl.dataset.pos = 'right';
+      rightEl.dataset.pos  = 'left';
+    } else {
+      // right → center, center → left, left → right
+      rightEl.dataset.pos  = 'center';
+      centerEl.dataset.pos = 'left';
+      leftEl.dataset.pos   = 'right';
+    }
 
-<h2>3. Thumbnails and File Previews</h2>
+    // Apply classes based on new positions
+    phones.forEach(p => {
+      const pos = p.dataset.pos;
+      p.className = 'phone-wrap ' + (pos === 'center' ? 'center' : 'side');
+      p.onclick = pos !== 'center' ? () => cycleCarousel(pos) : null;
+      p.style.cursor = pos !== 'center' ? 'pointer' : 'default';
+    });
+  }
 
-<p>
-To display previews of files inside the vault, Lockify generates thumbnail images from files you import.
-These thumbnails are stored locally within the app’s private storage and are not shared or transmitted.
-</p>
-
-<h2>4. Temporary Decrypted Files</h2>
-
-<p>
-Certain features may temporarily create decrypted copies of files on your device only, such as:
-</p>
-
-<ul>
-    <li>Viewing large files or PDFs</li>
-    <li>Using the “Open with” or export feature to open a file in another app</li>
-</ul>
-
-<p>
-These temporary files are stored in app-private locations and are intended to be removed automatically.
-Once a file is opened in another app, Lockify cannot control how that external app handles the file.
-</p>
-
-<h2>5. Data Sharing</h2>
-
-<p>
-Lockify does not share your data with third parties.
-</p>
-
-<p>
-The current version of the app does not include analytics, advertising SDKs, tracking tools, or cloud services.
-</p>
-
-<p>
-If you choose to export a file or open it with another app, that action is performed only at your request,
-and data is shared directly with the app you select.
-</p>
-
-<h2>6. Internet and Network Usage</h2>
-
-<p>
-Lockify does not require internet access to function and does not communicate with external servers.
-Your data remains on your device unless you explicitly export it.
-</p>
-
-<h2>7. Google Play In-App Review</h2>
-
-<p>
-Lockify may use Google Play’s official in-app review feature to allow users to rate the app.
-This process is handled entirely by Google Play.
-Lockify does not send any vault data or personal content to Google as part of this process.
-</p>
-
-<h2>8. What We Do Not Collect</h2>
-
-<p>Lockify does not collect, store, or transmit:</p>
-
-<ul>
-    <li>Analytics or usage tracking data</li>
-    <li>Advertising identifiers</li>
-    <li>Location data</li>
-    <li>Contacts, messages, or call logs</li>
-    <li>Device identifiers</li>
-    <li>Raw biometric data</li>
-    <li>Device screen lock credentials</li>
-    <li>Cloud backups of vault data</li>
-</ul>
-
-<h2>9. Children’s Privacy</h2>
-
-<p>
-Lockify is not specifically designed for children and does not target children as its primary audience.
-The app does not knowingly collect personal information from children.
-All data stored in the app is user-provided and remains on the device.
-</p>
-
-<h2>10. Changes to This Privacy Policy</h2>
-
-<p>
-This Privacy Policy may be updated from time to time to reflect changes in app features or legal requirements.
-Any updates will be reflected on this page with a revised effective date.
-</p>
-
-<h2>11. Contact Information</h2>
-
-<p>
-If you have any questions or concerns about this Privacy Policy, you can contact us at:
-</p>
-
-<p>
-📧 <a href="mailto:lockify.dev@gmail.com">lockify.dev@gmail.com</a>
-</p>
-
+  // Initial cursor styling
+  document.querySelectorAll('.phone-wrap.side').forEach(p => p.style.cursor = 'pointer');
+</script>
 </body>
-
 </html>
