@@ -1152,9 +1152,18 @@
 <script>
   // ── INTRO SPLASH ──
   (function() {
-    document.body.classList.add('splash-active');
+
+    const shouldSkip = sessionStorage.getItem('skipSplash') === 'true';
     const splash = document.getElementById('intro-splash');
-    // After animation completes, fade out splash and unlock scroll
+
+    if (shouldSkip) {
+      splash.style.display = 'none';
+      sessionStorage.removeItem('skipSplash');
+      return;
+    }
+
+    document.body.classList.add('splash-active');
+
     setTimeout(() => {
       splash.classList.add('fade-out');
       setTimeout(() => {
