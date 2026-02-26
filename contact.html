@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – Lockify</title>
+  <meta name="description" content="Get in touch with the Lockify developer for support, bug reports, or feature requests." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="Lockify_Logo.png">
+  <link rel="alternate icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="Lockify_Logo.png">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #3dd9a4;
+      --teal-dim: #2ab888;
+      --teal-glow: rgba(61, 217, 164, 0.15);
+      --bg: #0c0e0d;
+      --bg2: #131615;
+      --card: #161917;
+      --card-border: rgba(61, 217, 164, 0.1);
+      --text: #e4eae5;
+      --text-muted: #768a7c;
+      --text-dim: #3f5245;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(12,14,13,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(61,217,164,0.07);
+    }
+
+    .nav-logo img { height: 26px; width: auto; display: block; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--teal); }
+
+    .nav-cta {
+      background: var(--teal) !important;
+      color: #0c0e0d !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 500 !important;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .nav-cta:hover { opacity: 0.88 !important; transform: translateY(-1px); color: #0c0e0d !important; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 140px 24px 72px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      width: 640px; height: 640px;
+      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -58%);
+      pointer-events: none;
+    }
+
+    /* Subtle dot grid — same as hero */
+    .page-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(61,217,164,0.14) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .mono-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header p {
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.72;
+      max-width: 440px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── CONTENT WRAPPER ── */
+    .content {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+
+    /* ── DEVELOPER CARD ── */
+    .dev-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 16px;
+      transition: border-color 0.25s;
+    }
+
+    .dev-card:hover {
+      border-color: rgba(61,217,164,0.22);
+    }
+
+    .dev-avatar {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: rgba(61,217,164,0.08);
+      border: 1px solid rgba(61,217,164,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .dev-avatar svg {
+      width: 26px; height: 26px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dev-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dev-role {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .dev-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0;
+    }
+
+    /* ── EMAIL CARD ── */
+    .email-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 48px;
+      text-decoration: none;
+      transition: border-color 0.25s, background 0.25s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .email-card:hover {
+      border-color: rgba(61,217,164,0.28);
+      background: #1a1e1b;
+      transform: translateY(-2px);
+    }
+
+    .email-icon {
+      width: 44px; height: 44px;
+      border-radius: 11px;
+      background: rgba(61,217,164,0.08);
+      border: 1px solid rgba(61,217,164,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .email-icon svg {
+      width: 20px; height: 20px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .email-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .email-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+
+    .email-address {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.93rem;
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .email-arrow {
+      width: 20px; height: 20px;
+      stroke: var(--text-dim);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .email-card:hover .email-arrow {
+      stroke: var(--teal);
+      transform: translate(2px, -2px);
+    }
+
+    /* ── TOPICS DIVIDER ── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    /* ── TOPIC ITEMS ── */
+    .topics {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.09);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .topic {
+      background: var(--bg);
+      padding: 22px 26px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: background 0.22s;
+    }
+
+    .topic:hover { background: var(--card); }
+
+    .topic-ico {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.13);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .topic-ico svg {
+      width: 16px; height: 16px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .topic h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .topic p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── RESPONSE NOTE ── */
+    .response-note {
+      background: rgba(61,217,164,0.04);
+      border: 1px solid rgba(61,217,164,0.09);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .response-note svg {
+      width: 16px; height: 16px;
+      stroke: var(--teal);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      margin-top: 3px;
+      opacity: 0.7;
+    }
+
+    .response-note p {
+      font-size: 0.81rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: rgba(61,217,164,0.06);
+      margin: 48px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.045);
+      padding: 34px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer a img { height: 20px; width: auto; display: block; }
+
+    .ft-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .ft-links a {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .ft-links a:hover { color: var(--teal); }
+    .ft-links a.active { color: var(--teal); }
+
+    .ft-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.71rem;
+      color: var(--text-dim);
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav { padding: 14px 24px; }
+      .nav-links li:not(:last-child) { display: none; }
+      footer { padding: 28px 24px; flex-direction: column; text-align: center; }
+      .dev-card { padding: 28px 24px; }
+      .email-card { padding: 22px 24px; }
+    }
+
+    @media (max-width: 540px) {
+      .dev-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="Lockify_text.svg" alt="Lockify" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#features" onclick="sessionStorage.setItem('skipSplash', 'true')">Features</a></li>
+    <li><a href="index.html#stealth" onclick="sessionStorage.setItem('skipSplash', 'true')">Stealth Mode</a></li>
+    <li><a href="index.html#faq" onclick="sessionStorage.setItem('skipSplash', 'true')">FAQ</a></li>
+    <li><a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="mono-tag">Get in touch</span>
+  <h1>Contact</h1>
+  <p>Have a question, found a bug, or want to suggest something? Reach out directly — all messages go straight to the developer.</p>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- Developer identity -->
+  <div class="dev-card reveal">
+    <div class="dev-avatar">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </div>
+    <div class="dev-info">
+      <div class="dev-role">Independent Developer</div>
+      <div class="dev-name">Subhodeep Roy</div>
+    </div>
+  </div>
+
+  <!-- Email CTA -->
+  <a class="email-card reveal" href="mailto:contact@getlockifyapp.com">
+    <div class="email-icon">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+    </div>
+    <div class="email-text">
+      <div class="email-label">Email</div>
+      <div class="email-address">contact@getlockifyapp.com</div>
+    </div>
+    <svg class="email-arrow" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+  </a>
+
+  <div class="divider"></div>
+
+  <!-- What to reach out about -->
+  <div class="section-label reveal">What you can reach out about</div>
+
+  <div class="topics reveal">
+    <div class="topic">
+      <div class="topic-ico">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <h3>Bug Reports</h3>
+        <p>Something not working as expected? Include your Android version, device model, and steps to reproduce — it helps a lot.</p>
+      </div>
+    </div>
+    <div class="topic">
+      <div class="topic-ico">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div>
+        <h3>Feature Requests</h3>
+        <p>Have an idea that would make Lockify better? I'd love to hear it. No request is too small or too out-there.</p>
+      </div>
+    </div>
+    <div class="topic">
+      <div class="topic-ico">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div>
+        <h3>General Questions</h3>
+        <p>Anything about how Lockify works, the privacy approach, or anything else — feel free to ask.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Response time note -->
+  <div class="response-note reveal">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <p>Lockify is an independent project. I try to respond within a few days, though it may take a bit longer during busy periods. Thanks for your patience.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html"><img src="Lockify_text.svg" alt="Lockify" /></a>
+  <ul class="ft-links">
+    <li><a href="index.html#features" onclick="sessionStorage.setItem('skipSplash', 'true')">Features</a></li>
+    <li><a href="index.html#faq" onclick="sessionStorage.setItem('skipSplash', 'true')">FAQ</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <span class="ft-copy">© 2026 Lockify. Built for privacy.</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 80);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
