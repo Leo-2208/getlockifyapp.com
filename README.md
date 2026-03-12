@@ -1,4 +1,4 @@
-# lockify-privacy
+# lockify-website
 Privacy Policy for Lockify Android App
 ## Privacy Policy
 https://getlockifyapp.com/privacy.html
