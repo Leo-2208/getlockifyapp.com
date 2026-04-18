@@ -309,7 +309,7 @@
 <div class="page-header">
   <span class="mono-tag">Legal</span>
   <h1>Privacy Policy</h1>
-  <span class="effective-date">Effective date: 26 February 2026</span>
+  <span class="effective-date">Effective date: 18 April 2026</span>
 </div>
 
 <!-- CONTENT -->
@@ -348,6 +348,7 @@
       <li>File metadata (such as file name, size, type, and timestamps)</li>
       <li>Folder structure information</li>
       <li>Thumbnail images generated for preview purposes</li>
+      <li>Encrypted backup files you create, saved to a storage location you choose on your device</li>
       <li>App settings and preferences (such as stealth mode status, warning confirmations, and review prompts)</li>
     </ul>
     <p>Lockify does not upload or synchronize this data to any external servers.</p>
@@ -376,35 +377,51 @@
   <!-- 5 -->
   <div class="policy-section">
     <div class="section-num">05</div>
-    <h2>Data Sharing</h2>
-    <p>Lockify does not share vault content with third parties. If optional services such as analytics or cloud sync are introduced in future versions, they will be described in an updated Privacy Policy. The current version of the app does not include analytics, advertising SDKs, tracking tools, or cloud services.</p>
-    <p>If you choose to export a file or open it with another app, that action is performed only at your request, and data is shared directly with the app you select.</p>
+    <h2>Encrypted Backup and Import</h2>
+    <p>Lockify includes an optional encrypted backup feature that lets you create a portable backup of your vault and restore it later.</p>
+
+    <h3>a) Creating a Backup</h3>
+    <p>When you create a backup, Lockify encrypts all vault contents using AES-256-GCM encryption and writes the resulting backup file to a storage location you select on your device via Android's Storage Access Framework. Lockify does not transmit this file to any server. The backup file is stored wherever you choose to save it — Lockify has no control over what you do with the file after it is created.</p>
+
+    <h3>b) Importing a Backup</h3>
+    <p>When you import a backup, Lockify reads and decrypts the backup file you select. All decryption and data processing occurs entirely on your device. No data is transmitted externally during this process.</p>
+
+    <h3>c) Background Processing and Foreground Service</h3>
+    <p>Backup and import operations run as Android foreground services to ensure they complete reliably even when the app is in the background or removed from the recent tasks list. While a foreground service is active, Android requires Lockify to display a system notification indicating that a background operation is in progress. On older Android versions this appears as a notification in the notification shade; on Android 14 and above it may appear as an active-app indicator in the status bar. This is a system requirement and does not involve any collection or transmission of data.</p>
   </div>
 
   <!-- 6 -->
   <div class="policy-section">
     <div class="section-num">06</div>
-    <h2>Internet and Network Usage</h2>
-    <p>Lockify functions fully offline by default. Future optional features may require network access and will only operate when enabled. Your data remains on your device unless you explicitly export it.</p>
+    <h2>Data Sharing</h2>
+    <p>Lockify does not share vault content with third parties. If optional services such as analytics or cloud sync are introduced in future versions, they will be described in an updated Privacy Policy. The current version of the app does not include analytics, advertising SDKs, tracking tools, or cloud services.</p>
+    <p>If you choose to export a file or open it with another app, that action is performed only at your request, and data is shared directly with the app you select.</p>
   </div>
 
   <!-- 7 -->
   <div class="policy-section">
     <div class="section-num">07</div>
-    <h2>Google Play In-App Review</h2>
-    <p>Lockify may use Google Play's official in-app review feature to allow users to rate the app. This process is handled entirely by Google Play. Lockify does not send any vault data or personal content to Google as part of this process.</p>
+    <h2>Internet and Network Usage</h2>
+    <p>Lockify functions fully offline by default. Future optional features may require network access and will only operate when enabled. Your data remains on your device unless you explicitly export it.</p>
   </div>
 
   <!-- 8 -->
   <div class="policy-section">
     <div class="section-num">08</div>
-    <h2>Data Retention</h2>
-    <p>All vault data remains on your device until you delete it or uninstall the app. Uninstalling the app may permanently remove vault data unless you have exported it beforehand.</p>
+    <h2>Google Play In-App Review</h2>
+    <p>Lockify may use Google Play's official in-app review feature to allow users to rate the app. This process is handled entirely by Google Play. Lockify does not send any vault data or personal content to Google as part of this process.</p>
   </div>
 
   <!-- 9 -->
   <div class="policy-section">
     <div class="section-num">09</div>
+    <h2>Data Retention</h2>
+    <p>All vault data remains on your device until you delete it or uninstall the app. Uninstalling the app may permanently remove vault data unless you have exported it or created a backup beforehand.</p>
+  </div>
+
+  <!-- 10 -->
+  <div class="policy-section">
+    <div class="section-num">10</div>
     <h2>What We Do Not Collect</h2>
     <p>The current version of Lockify does not collect, store, or transmit:</p>
     <ul>
@@ -415,27 +432,27 @@
       <li>Device identifiers</li>
       <li>Raw biometric data</li>
       <li>Device screen lock credentials</li>
-      <li>Cloud backups of vault data</li>
+      <li>Remote or cloud uploads of vault data</li>
     </ul>
-  </div>
-
-  <!-- 10 -->
-  <div class="policy-section">
-    <div class="section-num">10</div>
-    <h2>Children's Privacy</h2>
-    <p>Lockify is not specifically designed for children and does not target children as its primary audience. The app does not knowingly collect personal information from children. All data stored in the app is provided by the user and remains on the device.</p>
   </div>
 
   <!-- 11 -->
   <div class="policy-section">
     <div class="section-num">11</div>
-    <h2>Changes to This Privacy Policy</h2>
-    <p>This Privacy Policy may be updated from time to time to reflect changes in app features or legal requirements. Any updates will be reflected on this page with a revised effective date. This Privacy Policy is governed by the laws of India.</p>
+    <h2>Children's Privacy</h2>
+    <p>Lockify is not specifically designed for children and does not target children as its primary audience. The app does not knowingly collect personal information from children. All data stored in the app is provided by the user and remains on the device.</p>
   </div>
 
   <!-- 12 -->
   <div class="policy-section">
     <div class="section-num">12</div>
+    <h2>Changes to This Privacy Policy</h2>
+    <p>This Privacy Policy may be updated from time to time to reflect changes in app features or legal requirements. Any updates will be reflected on this page with a revised effective date. This Privacy Policy is governed by the laws of India.</p>
+  </div>
+
+  <!-- 13 -->
+  <div class="policy-section">
+    <div class="section-num">13</div>
     <h2>Contact Information</h2>
     <p>If you have any questions or concerns about this Privacy Policy, you can reach us at:</p>
     <div class="contact-box">
