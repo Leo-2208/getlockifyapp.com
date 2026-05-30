@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opening Lockify…</title>
+  <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline. No analytics. No cloud. Your files, only yours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="../Lockify_Logo.png">
+  <link rel="alternate icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" href="../Lockify_Logo.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #3dd9a4;
+      --teal-dim: #2ab888;
+      --teal-glow: rgba(61, 217, 164, 0.15);
+      --bg: #0c0e0d;
+      --bg2: #131615;
+      --card: #161917;
+      --card-border: rgba(61, 217, 164, 0.1);
+      --text: #e4eae5;
+      --text-muted: #768a7c;
+      --text-dim: #3f5245;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      line-height: 1.65;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(12,14,13,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(61,217,164,0.07);
+    }
+
+    .nav-logo img {
+      height: 26px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-cta {
+      background: var(--teal);
+      color: #0c0e0d;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-dots {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(61,217,164,0.18) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 80%);
+      pointer-events: none;
+    }
+
+    /* Lock animation — same as main site splash */
+    .lock-wrap {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .splash-glow {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(61,217,164,0.18) 0%, transparent 70%);
+    }
+
+    .lock-svg {
+      width: 80px;
+      height: 80px;
+      overflow: visible;
+    }
+
+    .lock-shackle {
+      transform-origin: 27.0px 31.6px;
+      transform: rotate(0deg);
+      animation: shacklePulse 3s 1s ease-in-out infinite;
+    }
+
+    @keyframes shacklePulse {
+      0%, 100% { transform: rotate(0deg); }
+      30%       { transform: rotate(-12deg); }
+      60%       { transform: rotate(0deg); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(61,217,164,0.07);
+      border: 1px solid rgba(61,217,164,0.18);
+      border-radius: 100px;
+      padding: 6px 16px 6px 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeUp 0.55s 0.08s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+      animation: blink 2.5s infinite;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity:1; } 50% { opacity: 0.25; }
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 560px;
+      margin-bottom: 18px;
+      animation: fadeUp 0.55s 0.12s ease both;
+    }
+
+    h1 .accent { color: var(--teal); }
+
+    .sub {
+      font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+      color: var(--text-muted);
+      max-width: 420px;
+      margin-bottom: 40px;
+      font-weight: 300;
+      line-height: 1.72;
+      animation: fadeUp 0.55s 0.18s ease both;
+    }
+
+    .ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.55s 0.24s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--teal);
+      color: #0c0e0d;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.92rem;
+      padding: 13px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 48px rgba(61,217,164,0.22);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 0 64px rgba(61,217,164,0.32);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 0.92rem;
+      padding: 13px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.09);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(61,217,164,0.28);
+      color: var(--teal);
+      transform: translateY(-2px);
+    }
+
+    .desktop-note {
+      margin-top: 36px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      animation: fadeUp 0.55s 0.3s ease both;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.045);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer a img { height: 20px; width: auto; display: block; }
+
+    .ft-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .ft-links a {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .ft-links a:hover { color: var(--teal); }
+
+    .ft-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.71rem;
+      color: var(--text-dim);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 24px; }
+      footer { padding: 24px; flex-direction: column; align-items: center; text-align: center; }
+      .ft-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../" class="nav-logo">
+    <img src="../Lockify_text.svg" alt="Lockify" />
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="nav-cta">Download</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-dots"></div>
+
+  <div class="lock-wrap">
+    <div class="splash-glow"></div>
+    <svg class="lock-svg" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="lock-shackle">
+        <path d="M27.0 36.5 L27.0 31.6 A17.73 17.73 0 1 1 62.0 31.6 L62.0 36.5"
+              stroke="#49B195" stroke-width="6.2"
+              stroke-linecap="butt" stroke-linejoin="round" fill="none"/>
+      </g>
+      <g class="lock-body">
+        <rect x="13.0" y="31.6" width="63.0" height="47.5" rx="18.5" ry="21.5" fill="#0c0e0d"/>
+        <path d="M24.1 34.6 H64.9 A8 8 0 0 1 72.9 42.6 V64.1 A12 12 0 0 1 60.9 76.1 H28.1 A12 12 0 0 1 16.1 64.1 V42.6 A8 8 0 0 1 24.1 34.6 Z"
+              stroke="#49B195" stroke-width="6.1" fill="none"/>
+        <circle cx="44.5" cy="51.5" r="7.6" fill="#49B195"/>
+        <rect x="41.0" y="57.0" width="6.9" height="9.8" rx="3.0" fill="#49B195"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Opening Lockify
+  </div>
+
+  <h1>If Lockify is installed,<br>it's <span class="accent">opening now.</span></h1>
+
+  <p class="sub">Nothing happened? Tap the button below. On a desktop? Lockify is an Android app — grab it on the Play Store.</p>
+
+  <div class="ctas">
+    <a class="btn-primary" href="https://getlockifyapp.com/open">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+      Open in App
+    </a>
+    <a class="btn-ghost" href="https://play.google.com/store/apps/details?id=com.leo.lockify">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
+      Get on Play Store
+    </a>
+  </div>
+
+  <p class="desktop-note">On Android — this link opens Lockify directly. Save it as a bookmark.</p>
+</section>
+
+<footer>
+  <a href="../"><img src="../Lockify_text.svg" alt="Lockify" /></a>
+  <ul class="ft-links">
+    <li><a href="../#features">Features</a></li>
+    <li><a href="../privacy.html">Privacy Policy</a></li>
+    <li><a href="../contact.html">Contact</a></li>
+  </ul>
+  <span class="ft-copy">© 2026 Lockify. Built for privacy.</span>
+</footer>
+
+</body>
+</html>

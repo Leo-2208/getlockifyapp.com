@@ -1,0 +1,10 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.leo.lockify",
+      "sha256_cert_fingerprints": [
+        "9E:2F:68:DE:91:6A:3F:6C:04:A4:D2:A4:4B:CF:6E:CC:60:9A:FC:40:FB:3A:D2:48:25:4F:27:C4:00:09:82:CB"
+      ]
+    }
+  }]
