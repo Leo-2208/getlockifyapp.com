@@ -4,7 +4,9 @@
       "namespace": "android_app",
       "package_name": "com.leo.lockify",
       "sha256_cert_fingerprints": [
-        "9E:2F:68:DE:91:6A:3F:6C:04:A4:D2:A4:4B:CF:6E:CC:60:9A:FC:40:FB:3A:D2:48:25:4F:27:C4:00:09:82:CB"
+        "9E:2F:68:DE:91:6A:3F:6C:04:A4:D2:A4:4B:CF:6E:CC:60:9A:FC:40:FB:3A:D2:48:25:4F:27:C4:00:09:82:CB",
+        "1A:7D:76:30:87:D8:4F:7D:EC:31:84:E0:8A:08:D1:C6:19:9B:B9:67:A2:85:AE:C7:0A:5B:0A:4A:41:22:AF:C0",
+        "E6:1E:46:C7:36:98:8B:7F:D8:F4:C6:3C:D6:6D:8B:DA:5D:C7:9D:F5:AA:5B:10:E7:6B:16:EC:14:22:52:89:12"
       ]
     }
   }]
