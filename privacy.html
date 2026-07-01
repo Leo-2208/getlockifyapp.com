@@ -309,7 +309,7 @@
 <div class="page-header">
   <span class="mono-tag">Legal</span>
   <h1>Privacy Policy</h1>
-  <span class="effective-date">Effective date: 21 May 2026</span>
+  <span class="effective-date">Effective date: 03 July 2026</span>
 </div>
 
 <!-- CONTENT -->
@@ -336,13 +336,16 @@
 
     <h3>c) Optional Profile Information</h3>
     <p>You may optionally set a profile name within the app. This information is stored locally on your device and is used only for display within the app.</p>
+
+    <h3>d) Google Account Information (Cloud Sync)</h3>
+    <p>If you choose to enable the optional Cloud Sync feature, Lockify requests your Google account email address as part of connecting to Google Drive. This is used only to confirm and display which account is connected, and is stored locally on your device. See Section 07 for details on Cloud Sync.</p>
   </div>
 
   <!-- 2 -->
   <div class="policy-section">
     <div class="section-num">02</div>
     <h2>Data Stored on Your Device</h2>
-    <p>All data used by Lockify is stored locally on your device only. This includes:</p>
+    <p>All data used by Lockify is stored locally on your device only, unless you choose to enable the optional Cloud Sync feature described in Section 07. This includes:</p>
     <ul>
       <li>Encrypted files you import into the vault</li>
       <li>File metadata (such as file name, size, type, and timestamps)</li>
@@ -351,7 +354,7 @@
       <li>Encrypted backup files you create, saved to a storage location you choose on your device</li>
       <li>App settings and preferences (such as stealth mode status, warning confirmations, and review prompts)</li>
     </ul>
-    <p>Lockify does not upload or synchronize this data to any external servers.</p>
+    <p>Lockify does not upload or synchronize this data to any external servers unless you explicitly enable Cloud Sync. The Decoy Vault is never included in local backups or Cloud Sync — its contents remain exclusively on the device they were created on.</p>
     <p>While Lockify implements strong encryption and on-device security measures, no software system can guarantee absolute security.</p>
   </div>
 
@@ -365,6 +368,22 @@
   <!-- 4 -->
   <div class="policy-section">
     <div class="section-num">04</div>
+    <h2>Premium Security Features</h2>
+    <p>Lockify offers optional premium features for protecting and disguising the vault. These features operate entirely on your device and do not transmit data externally.</p>
+
+    <h3>a) Disguise Mode</h3>
+    <p>Disguise Mode lets you replace the app's icon and name with one of three preset alternatives (Settings, Package Installer, or Device Care). Tapping the disguised icon shows a short message you configure yourself, rather than opening the vault. The vault can only be opened while disguised via a deep link (https://getlockifyapp.com/open). Your chosen preset and message are stored locally on your device.</p>
+
+    <h3>b) Decoy Vault</h3>
+    <p>Decoy Vault is a separate, alternate vault space protected by its own PIN that you set. It is stored locally on your device, independently of your main vault, and is never included in local backups or Cloud Sync.</p>
+
+    <h3>c) Motion Lock</h3>
+    <p>Motion Lock uses your device's built-in accelerometer to detect gestures such as a flip, shake, or snatch, and automatically locks the vault in response. Sensor readings are processed entirely on-device in real time to make this decision and are never stored or transmitted.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="policy-section">
+    <div class="section-num">05</div>
     <h2>Temporary Decrypted Files</h2>
     <p>Certain features may temporarily create decrypted copies of files on your device only, such as:</p>
     <ul>
@@ -374,9 +393,9 @@
     <p>These temporary files are stored in app-private locations and are intended to be removed automatically. Once a file is opened in another app, Lockify cannot control how that external app handles the file.</p>
   </div>
 
-  <!-- 5 -->
+  <!-- 6 -->
   <div class="policy-section">
-    <div class="section-num">05</div>
+    <div class="section-num">06</div>
     <h2>Encrypted Backup and Import</h2>
     <p>Lockify includes an optional encrypted backup feature that lets you create a portable backup of your vault and restore it later.</p>
 
@@ -390,42 +409,60 @@
     <p>Backup and import operations run as Android foreground services to ensure they complete reliably even when the app is in the background or removed from the recent tasks list. While a foreground service is active, Android requires Lockify to display a system notification indicating that a background operation is in progress. On older Android versions this appears as a notification in the notification shade; on Android 14 and above it may appear as an active-app indicator in the status bar. This is a system requirement and does not involve any collection or transmission of data.</p>
   </div>
 
-  <!-- 6 -->
-  <div class="policy-section">
-    <div class="section-num">06</div>
-    <h2>Data Sharing</h2>
-    <p>Lockify does not share vault content with third parties. If optional services such as analytics or cloud sync are introduced in future versions, they will be described in an updated Privacy Policy. The current version of the app does not include analytics, advertising SDKs, tracking tools, or cloud services.</p>
-    <p>If you choose to export a file or open it with another app, that action is performed only at your request, and data is shared directly with the app you select.</p>
-  </div>
-
   <!-- 7 -->
   <div class="policy-section">
     <div class="section-num">07</div>
-    <h2>Internet and Network Usage</h2>
-    <p>Lockify functions fully offline by default. Your vault data remains on your device unless you explicitly export it.</p>
-    <p>Lockify connects to Google Play on launch to verify and restore any in-app purchases associated with your Google Play account. This communication occurs between your device and Google Play infrastructure only — no vault data or personal content is involved.</p>
+    <h2>Cloud Sync (Google Drive)</h2>
+    <p>Lockify includes an optional Cloud Sync feature that lets you back up and restore your vault using your own Google Drive account.</p>
+
+    <h3>a) Connecting Your Google Account</h3>
+    <p>To use Cloud Sync, you choose and sign in with a Google account. Lockify requests your email address, shown in the app to confirm which account is connected, and permission to access only files that Lockify itself creates in your Google Drive — Lockify cannot see or access any of your other Drive files.</p>
+
+    <h3>b) What Gets Synced</h3>
+    <p>When Cloud Sync is enabled, your vault contents are encrypted on your device using the same AES-256-GCM encryption and password-based key derivation used for local backups, before ever leaving your device. The encrypted backup is then uploaded to a "Lockify Backup" folder in your Google Drive. Google and Lockify cannot read the contents of this encrypted backup. The Decoy Vault is never included in Cloud Sync.</p>
+
+    <h3>c) Disconnecting Your Account</h3>
+    <p>You can disconnect your Google account from within the app at any time. Disconnecting stops future sync activity but does not delete files already uploaded to Google Drive — those files remain in your Google Drive until you delete them yourself, either from within the app or directly in Google Drive.</p>
   </div>
 
   <!-- 8 -->
   <div class="policy-section">
     <div class="section-num">08</div>
-    <h2>Google Play Services</h2>
-    <p>Lockify may use Google Play's official in-app review feature to allow users to rate the app. This process is handled entirely by Google Play. Lockify does not send any vault data or personal content to Google as part of this process.</p>
-    <p>Lockify uses Google Play Billing to offer optional in-app purchases. Purchase transactions are processed entirely by Google Play. Lockify does not collect or store payment information. Purchase entitlement status is stored locally on your device only. Google's own privacy policy governs all billing and transaction data.</p>
+    <h2>Data Sharing</h2>
+    <p>Lockify does not share vault content with third parties, other than the encrypted upload to your own Google Drive if you explicitly enable Cloud Sync, as described in Section 07. The app does not include analytics, advertising SDKs, or tracking tools.</p>
+    <p>If you choose to export a file or open it with another app, that action is performed only at your request, and data is shared directly with the app you select.</p>
   </div>
 
   <!-- 9 -->
   <div class="policy-section">
     <div class="section-num">09</div>
-    <h2>Data Retention</h2>
-    <p>All vault data remains on your device until you delete it or uninstall the app. Uninstalling the app may permanently remove vault data unless you have exported it or created a backup beforehand.</p>
+    <h2>Internet and Network Usage</h2>
+    <p>Lockify functions fully offline by default. Your vault data remains on your device unless you explicitly export it or enable the optional Cloud Sync feature.</p>
+    <p>Lockify connects to Google Play on launch to verify and restore any in-app purchases associated with your Google Play account, and to check for available app updates. This communication occurs between your device and Google Play infrastructure only — no vault data or personal content is involved.</p>
+    <p>If you enable Cloud Sync, Lockify also connects to Google Drive to upload and download your encrypted backup, as described in Section 07.</p>
   </div>
 
   <!-- 10 -->
   <div class="policy-section">
     <div class="section-num">10</div>
+    <h2>Google Play Services</h2>
+    <p>Lockify may use Google Play's official in-app review feature to allow users to rate the app. This process is handled entirely by Google Play. Lockify does not send any vault data or personal content to Google as part of this process.</p>
+    <p>Lockify uses Google Play Billing to offer optional premium purchases, including auto-renewing subscriptions and one-time purchases. Purchase and subscription transactions are processed entirely by Google Play, and subscriptions can be managed or cancelled through your Google Play account settings. Lockify does not collect or store payment information. Purchase entitlement status is stored locally on your device only. Google's own privacy policy governs all billing and transaction data.</p>
+    <p>Lockify uses Google Play's In-App Update API to check whether a newer app version is available and to prompt you to update. This check is handled entirely by Google Play and does not involve any vault data or personal content.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="policy-section">
+    <div class="section-num">11</div>
+    <h2>Data Retention</h2>
+    <p>All vault data remains on your device until you delete it or uninstall the app. Uninstalling the app may permanently remove vault data unless you have exported it or created a backup beforehand.</p>
+  </div>
+
+  <!-- 12 -->
+  <div class="policy-section">
+    <div class="section-num">12</div>
     <h2>What We Do Not Collect</h2>
-    <p>The current version of Lockify does not collect, store, or transmit:</p>
+    <p>Lockify does not collect, store, or transmit:</p>
     <ul>
       <li>Analytics or usage tracking data</li>
       <li>Advertising identifiers</li>
@@ -434,27 +471,28 @@
       <li>Device identifiers</li>
       <li>Raw biometric data</li>
       <li>Device screen lock credentials</li>
-      <li>Remote or cloud uploads of vault data</li>
+      <li>Decoy Vault contents, in local backups or Cloud Sync</li>
     </ul>
-  </div>
-
-  <!-- 11 -->
-  <div class="policy-section">
-    <div class="section-num">11</div>
-    <h2>Children's Privacy</h2>
-    <p>Lockify is not specifically designed for children and does not target children as its primary audience. The app does not knowingly collect personal information from children. All data stored in the app is provided by the user and remains on the device.</p>
-  </div>
-
-  <!-- 12 -->
-  <div class="policy-section">
-    <div class="section-num">12</div>
-    <h2>Changes to This Privacy Policy</h2>
-    <p>This Privacy Policy may be updated from time to time to reflect changes in app features or legal requirements. Any updates will be reflected on this page with a revised effective date. This Privacy Policy is governed by the laws of India.</p>
+    <p>Vault data is uploaded only if you explicitly enable Cloud Sync, and only in encrypted form, as described in Section 07.</p>
   </div>
 
   <!-- 13 -->
   <div class="policy-section">
     <div class="section-num">13</div>
+    <h2>Children's Privacy</h2>
+    <p>Lockify is not specifically designed for children and does not target children as its primary audience. The app does not knowingly collect personal information from children. All data stored in the app is provided by the user and remains on the device.</p>
+  </div>
+
+  <!-- 14 -->
+  <div class="policy-section">
+    <div class="section-num">14</div>
+    <h2>Changes to This Privacy Policy</h2>
+    <p>This Privacy Policy may be updated from time to time to reflect changes in app features or legal requirements. Any updates will be reflected on this page with a revised effective date. This Privacy Policy is governed by the laws of India.</p>
+  </div>
+
+  <!-- 15 -->
+  <div class="policy-section">
+    <div class="section-num">15</div>
     <h2>Contact Information</h2>
     <p>If you have any questions or concerns about this Privacy Policy, you can reach us at:</p>
     <div class="contact-box">

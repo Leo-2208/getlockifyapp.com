@@ -1,4 +1,5 @@
-[{
+[
+  {
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
@@ -9,4 +10,5 @@
         "E6:1E:46:C7:36:98:8B:7F:D8:F4:C6:3C:D6:6D:8B:DA:5D:C7:9D:F5:AA:5B:10:E7:6B:16:EC:14:22:52:89:12"
       ]
     }
-  }]
+  }
+]
