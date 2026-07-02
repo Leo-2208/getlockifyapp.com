@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lockify – Local Encrypted Vault</title>
-  <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline. No analytics. No cloud. Your files, only yours." />
+  <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline by default. No analytics. Your files, only yours." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -586,12 +586,40 @@
       font-weight: 600;
       font-size: 0.98rem;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
     }
 
     .feat p {
       font-size: 0.85rem;
       color: var(--text-muted);
       line-height: 1.68;
+    }
+
+    .feat-premium-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: rgba(61,217,164,0.08);
+      border: 1px solid rgba(61,217,164,0.2);
+      padding: 3px 9px 3px 6px;
+      border-radius: 100px;
+      line-height: 1;
+    }
+
+    .feat-premium-badge svg {
+      width: 10px;
+      height: 10px;
+      fill: currentColor;
+      flex-shrink: 0;
     }
 
     /* ── STEALTH ── */
@@ -675,6 +703,27 @@
       padding: 4px 10px;
       border-radius: 5px;
       letter-spacing: 0.04em;
+    }
+
+    .stealth-solo {
+      margin-top: 20px;
+      background: var(--card);
+      border: 1px solid rgba(61,217,164,0.1);
+      border-radius: 22px;
+      padding: 44px 48px;
+    }
+
+    .stealth-solo .mono-tag {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stealth-solo p {
+      font-size: 0.91rem;
+      color: var(--text-muted);
+      line-height: 1.76;
+      margin-bottom: 12px;
     }
 
     /* ── PLEDGE ── */
@@ -940,6 +989,7 @@
       .stealth-card { grid-template-columns: 1fr; }
       .stealth-vis { border-right: none; border-bottom: 1px solid rgba(61,217,164,0.07); padding: 36px 24px; }
       .stealth-txt { padding: 36px 28px; }
+      .stealth-solo { padding: 36px 28px; }
       .pledge-grid { grid-template-columns: 1fr; }
       .stats-inner { grid-template-columns: repeat(2, 1fr); }
       .stat:nth-child(3) { border-left: none; border-top: 1px solid rgba(61,217,164,0.07); }
@@ -957,6 +1007,13 @@
   </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="ico-crown" viewBox="0 0 1254 1254">
+    <path d="M624.894 260.417C645.828 257.982 667.734 268.659 679.973 285.539C690.086 299.448 694.107 316.872 691.111 333.807C687.704 353.693 677.127 365.346 661.281 376.6C673.782 396.288 687.99 415.993 701.013 435.443C730.251 479.109 761.027 522.397 789.934 566.206C812.325 553.141 836.902 540.534 859.704 527.946C892.226 509.992 925.165 491.062 958.267 474.315C944.267 450.548 943.318 424.868 959.606 401.833C968.866 388.614 983.031 379.649 998.942 376.939C1015.53 374.122 1032.56 378.093 1046.19 387.96C1059.57 397.842 1068.49 412.615 1071 429.052C1073.63 446.197 1069.29 463.68 1058.94 477.606C1045.67 495.425 1030.17 499.68 1009.4 502.611C1005.59 520.184 999.707 539.88 995.001 557.496L969.372 653.705C961.533 683.375 953.507 712.995 945.293 742.563C940.914 758.451 936.832 774.217 931.79 789.908C921.586 821.657 897.21 817.568 870.21 817.509L817.425 817.42L632.817 817.461L444.299 817.455L390.04 817.554C331.394 817.982 330.478 819.096 314.664 761.026L300.131 707.524C281.838 639.336 263.931 571.046 246.411 502.656C235.806 502.126 226.761 500.488 217.139 495.785C202.345 488.459 191.075 475.546 185.817 459.897C174.994 427.828 191.926 390.724 224.518 380.037C240.68 374.814 258.254 376.223 273.377 383.955C288.179 391.596 299.308 404.842 304.284 420.74C310.835 441.617 306.125 456.213 296.438 474.581C333.233 494.785 370.144 514.776 407.17 534.553C425.239 544.339 448.194 558.019 466.397 566.529C470.925 558.611 477.52 549.64 482.821 542.033L509.069 504.268L597.284 376.371C582.351 365.906 572.042 350.309 569.224 332.179C566.505 315.567 570.586 298.56 580.548 284.992C591.84 269.822 606.673 263.181 624.894 260.417Z"/>
+    <path d="M377.441 855.623C386.103 854.994 398.878 855.6 407.892 855.689L456.022 855.709L636.064 855.752L794.389 855.583L844.108 855.499C862.9 855.478 886.953 852.757 901.977 865.457C910.826 872.964 916.231 883.755 916.944 895.337C917.747 906.704 914.008 917.926 906.546 926.54C897.422 936.896 887.096 940.003 873.814 940.848C861.352 941.331 847.532 940.952 834.913 940.915L772.99 940.901L567.905 940.82L442.425 940.869L400.752 941.021C383.506 941.097 363.295 943.187 349.232 931.444C331.382 916.54 329.08 887.717 344.191 870.047C353.403 859.276 363.902 856.681 377.441 855.623Z"/>
+  </symbol>
+</svg>
 
 <!-- NAV -->
 <!-- INTRO SPLASH -->
@@ -1158,9 +1215,24 @@
       <p>View images, videos, and PDFs directly inside the app. Temporary decrypted copies are cleaned up automatically after viewing.</p>
     </div>
     <div class="feat">
-      <div class="feat-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-      <h3>No Account to Start</h3>
-      <p>No sign-up, no email required to use the vault. Set a PIN, use biometrics, done. Optional account features may be added in future versions.</p>
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="12" rx="3"/><rect x="9" y="9" width="12" height="12" rx="3"/></svg></div>
+      <h3>Disguise Mode<span class="feat-premium-badge"><svg viewBox="0 0 1254 1254"><use href="#ico-crown"/></svg>Premium</span></h3>
+      <p>Swap the app icon for a preset disguise, with a custom message shown if it's tapped. The vault only opens via a private deep link.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <h3>Decoy Vault<span class="feat-premium-badge"><svg viewBox="0 0 1254 1254"><use href="#ico-crown"/></svg>Premium</span></h3>
+      <p>A separate, PIN-protected space with its own files — completely isolated from your main vault, and from backups.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/><line x1="2" y1="7" x2="4" y2="7"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="7" x2="22" y2="7"/><line x1="20" y1="12" x2="22" y2="12"/></svg></div>
+      <h3>Motion Lock<span class="feat-premium-badge"><svg viewBox="0 0 1254 1254"><use href="#ico-crown"/></svg>Premium</span></h3>
+      <p>Your device's motion sensors detect a flip, shake, or snatch, and lock the vault instantly. Fully on-device, nothing stored.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-ico"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
+      <h3>Cloud Sync<span class="feat-premium-badge"><svg viewBox="0 0 1254 1254"><use href="#ico-crown"/></svg>Premium</span></h3>
+      <p>Back up your vault to your own Google Drive, encrypted on your device before it ever leaves. Only you hold the key.</p>
     </div>
   </div>
 </section>
@@ -1184,6 +1256,18 @@
         <span class="tg">Icon replacement</span>
         <span class="tg">Zero trace</span>
       </div>
+    </div>
+  </div>
+
+  <div class="stealth-solo reveal">
+    <span class="mono-tag">More ways to hide<span class="feat-premium-badge" style="margin-left:10px;"><svg viewBox="0 0 1254 1254"><use href="#ico-crown"/></svg>Premium</span></span>
+    <h2 class="sh">Wear any <span style="color:var(--teal)">disguise.</span></h2>
+    <p>Disguise Mode swaps the app icon and name for one of three presets — Settings, Package Installer, or Device Care. Tapping the disguised icon shows a short message you write yourself, instead of opening anything.</p>
+    <p>The vault only opens through a private deep link, so the disguise never breaks by accident. Works alongside Calculator Stealth Mode — pick whichever fits your situation.</p>
+    <div class="tag-row">
+      <span class="tg">3 preset disguises</span>
+      <span class="tg">Custom tap message</span>
+      <span class="tg">Deep-link unlock only</span>
     </div>
   </div>
 </section>
