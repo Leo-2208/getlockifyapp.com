@@ -33,6 +33,14 @@
       "icon": "feature",
       "title": "Stealth PIN Recovery",
       "body": "Forgot your Calculator Stealth PIN? Tap AC seven times to trigger biometric verification and reset it. No settings menu, no obvious flow — just a quiet escape hatch."
+    },
+    {
+      "id": "german-vietnamese",
+      "date": "Aug 2026",
+      "badge": "Localization",
+      "icon": "localization",
+      "title": "German & Vietnamese",
+      "body": "Lockify now speaks German and Vietnamese. The entire app — menus, settings, prompts, and vault UI — is fully translated. More languages on the way."
     }
   ]
 }
