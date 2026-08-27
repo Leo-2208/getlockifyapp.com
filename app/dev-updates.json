@@ -1,0 +1,38 @@
+{
+  "contentVersion": 1,
+  "updatesUrl": "https://getlockifyapp.com/updates",
+  "updates": [
+    {
+      "id": "encrypted-notes",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Encrypted Notes",
+      "body": "Write, format, and organize private notes — encrypted at rest inside your vault. Rich text with bold, italic, colors, and highlights. Premium unlocks unlimited notes with the full toolbar."
+    },
+    {
+      "id": "slideshow-viewer",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Slideshow Viewer",
+      "body": "Turn any folder of images into a hands-free slideshow. Auto-advance, swipe controls, full-screen. Premium adds shuffle, custom intervals, and transitions."
+    },
+    {
+      "id": "about-the-dev",
+      "date": "Aug 2026",
+      "badge": "Announcement",
+      "icon": "announcement",
+      "title": "About the Dev",
+      "body": "A new section to stay in the loop — see what’s shipping, what’s next, and support development directly with optional one-time contributions."
+    },
+    {
+      "id": "stealth-pin-reset",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Stealth PIN Recovery",
+      "body": "Forgot your Calculator Stealth PIN? Tap AC seven times to trigger biometric verification and reset it. No settings menu, no obvious flow — just a quiet escape hatch."
+    }
+  ]
+}
