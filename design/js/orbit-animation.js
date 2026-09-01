@@ -138,6 +138,7 @@ export function initOrbitAnimation(selectors) {
       if (vis <= 0.01) {
         card.style.opacity = '0';
         card.style.transform = 'translate(-50%, -50%) scale(0)';
+        card.classList.remove('hoverable');
         continue;
       }
 
@@ -181,6 +182,7 @@ export function initOrbitAnimation(selectors) {
         'translate(-50%, -50%) translate(' + x + 'px, ' + y + 'px) scale(' + finalScale + ')';
       card.style.opacity = finalOpacity;
       card.style.zIndex = zIndex;
+      card.classList.toggle('hoverable', finalOpacity > 0.3);
     }
 
     requestAnimationFrame(render);

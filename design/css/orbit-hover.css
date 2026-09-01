@@ -1,0 +1,90 @@
+/* Allow hover elements to extend beyond the orbit scene */
+.orbit-scene { overflow: visible; }
+
+/* ═══════════════════ CARD HOVER GLOW ═══════════════════ */
+.orbit-card.hoverable {
+  pointer-events: auto;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.orbit-card.hoverable:hover {
+  box-shadow: 0 0 16px var(--teal-glow-strong), 0 0 40px var(--teal-glow);
+  border-color: var(--teal-soft);
+}
+
+.orbit-card.premium.hoverable:hover {
+  box-shadow: 0 0 16px rgba(232, 195, 104, 0.35), 0 0 40px var(--gold-dim);
+  border-color: var(--gold);
+}
+
+/* ═══════════════════ HOVER INFO BOX ═══════════════════ */
+.orbit-info-box {
+  position: absolute;
+  z-index: 200;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  width: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.orbit-info-box.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.orbit-info-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.orbit-info-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.orbit-info-box.premium {
+  border-color: rgba(232, 195, 104, 0.2);
+}
+
+.orbit-info-box.premium .orbit-info-title {
+  color: var(--gold);
+}
+
+/* ═══════════════════ CONNECTOR LINE ═══════════════════ */
+.orbit-connector-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 150;
+  overflow: visible;
+}
+
+.orbit-connector-line {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 4px rgba(61, 217, 164, 0.5));
+  transition: stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.orbit-connector-line.premium {
+  stroke: var(--gold);
+  filter: drop-shadow(0 0 4px rgba(232, 195, 104, 0.5));
+}
+
+.orbit-connector-dot {
+  transition: opacity 0.2s ease;
+}
