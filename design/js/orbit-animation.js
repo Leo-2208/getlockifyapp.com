@@ -15,6 +15,10 @@ export function initOrbitAnimation(selectors) {
   const cards     = Array.from(document.querySelectorAll(selectors.cards));
   const shackle   = lock.querySelector('.lock-shackle');
   const glow      = lock.querySelector('.orbit-lock-glow');
+  const ripple    = lock.querySelector('.orbit-lock-ripple');
+  const scene     = document.querySelector(selectors.scene);
+  const wordmark  = scene.querySelector('.orbit-wordmark');
+  const tag       = scene.querySelector('.orbit-tag');
 
   if (!container || !cards.length) return;
 
@@ -60,27 +64,61 @@ export function initOrbitAnimation(selectors) {
    *  0.00 - 0.08  Locked, static
    *  0.08 - 0.15  Shackle opens
    *  0.15 - 0.85  Continuous spin. Cards emerge 0.15–0.35, collapse 0.65–0.85
-   *  0.85 - 0.93  Shackle closes
-   *  0.93 - 1.00  Hold
+   *  0.82 - 0.88  Shackle closes
+   *  0.88 - 0.92  Glow pulse + ripple ring
+   *  0.90 - 0.95  Wordmark fades in
+   *  0.92 - 0.97  Tagline fades in
+   *  0.97 - 1.00  Hold
    */
   function render() {
     var p = getProgress();
 
     // --- Shackle ---
     var openT  = smoothstep(0.08, 0.15, p);
-    var closeT = smoothstep(0.85, 0.93, p);
+    var closeT = smoothstep(0.82, 0.88, p);
     var shackleAngle = p < 0.5
       ? lerp(cfg.shackleClosed, cfg.shackleOpen, openT)
       : lerp(cfg.shackleOpen, cfg.shackleClosed, closeT);
     shackle.style.transform = 'rotate(' + shackleAngle + 'deg)';
 
-    // --- Glow ---
+    // --- Glow: visible during orbit, pulses brighter after lock ---
     var glowIn  = smoothstep(0.08, 0.18, p);
-    var glowOut = smoothstep(0.85, 0.93, p);
-    glow.style.opacity = p < 0.5 ? glowIn : 1 - glowOut;
+    var glowOut = smoothstep(0.65, 0.82, p);
+    var glowLock = smoothstep(0.88, 0.92, p);
+    if (p < 0.65) {
+      glow.style.opacity = glowIn;
+    } else if (p < 0.88) {
+      glow.style.opacity = 1 - glowOut;
+    } else {
+      glow.style.opacity = glowLock;
+    }
+
+    // --- Ripple: expanding ring after lock closes ---
+    var rippleT = smoothstep(0.88, 0.94, p);
+    ripple.style.opacity = rippleT < 0.5 ? rippleT * 1.8 : (1 - rippleT) * 1.8;
+    ripple.style.transform = 'scale(' + lerp(0.85, 1.6, rippleT) + ')';
+
+    // --- Wordmark: "Lockify" fades in after lock ---
+    var wmT = smoothstep(0.90, 0.95, p);
+    var lockRect = lock.getBoundingClientRect();
+    var sceneRect = scene.getBoundingClientRect();
+    var lockCenterY = lockRect.top + lockRect.height / 2 - sceneRect.top;
+    var lockCenterX = lockRect.left + lockRect.width / 2 - sceneRect.left;
+
+    wordmark.style.opacity = wmT;
+    wordmark.style.transform = 'translate(-50%, 0) translateY(' + lerp(8, 0, wmT) + 'px)';
+    wordmark.style.left = lockCenterX + 'px';
+    wordmark.style.top = (lockCenterY + lockRect.height / 2 + 28) + 'px';
+
+    // --- Tag: "Local Encrypted Vault" fades in after wordmark ---
+    var tagT = smoothstep(0.92, 0.97, p);
+    tag.style.opacity = tagT;
+    tag.style.transform = 'translate(-50%, 0) translateY(' + lerp(8, 0, tagT) + 'px)';
+    tag.style.left = lockCenterX + 'px';
+    tag.style.top = (lockCenterY + lockRect.height / 2 + 64) + 'px';
 
     // --- Continuous orbit: spins from 0.15 to 0.85 ---
-    var orbitT = smoothstep(0.15, 0.85, p);
+    var orbitT = smoothstep(0.15, 0.82, p);
     var fullOrbitAngle = DIR * cfg.revolutions * Math.PI * 2 * orbitT;
 
     // --- Cards ---
@@ -91,7 +129,7 @@ export function initOrbitAnimation(selectors) {
       var emergeEnd   = emergeStart + 0.05;
       var emergeT     = smoothstep(emergeStart, emergeEnd, p);
 
-      var collapseStart = 0.65 + (i / N) * 0.17;
+      var collapseStart = 0.62 + (i / N) * 0.15;
       var collapseEnd   = collapseStart + 0.05;
       var collapseT     = smoothstep(collapseStart, collapseEnd, p);
 

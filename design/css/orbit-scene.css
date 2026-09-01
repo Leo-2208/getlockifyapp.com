@@ -1,5 +1,5 @@
 .orbit-container {
-  height: 500vh;
+  height: 1015vh;
   position: relative;
 }
 
@@ -38,6 +38,41 @@
   background: radial-gradient(circle, rgba(73, 177, 149, 0.2) 0%, transparent 70%);
   pointer-events: none;
   opacity: 0;
+}
+
+.orbit-lock-ripple {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(61, 217, 164, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+/* Wordmark + tagline below the lock */
+.orbit-wordmark {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  color: #e4eae5;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.orbit-tag {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
 /* Orbit ring — positioned at center, cards placed via JS */
