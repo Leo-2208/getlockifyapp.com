@@ -27,10 +27,9 @@ export function initOrbitAnimation(selectors) {
   function getRadius() {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    return {
-      x: Math.min(280, vw * 0.22),
-      y: Math.min(120, vh * 0.14),
-    };
+    var x = Math.min(280, vw * 0.22);
+    var y = Math.min(120, vh * 0.14, x * 0.45);
+    return { x: x, y: y };
   }
 
   const cfg = {

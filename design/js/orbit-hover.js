@@ -8,6 +8,8 @@
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export function initOrbitHover(sceneSelector) {
+  if (!matchMedia('(hover: hover)').matches) return;
+
   const scene = document.querySelector(sceneSelector);
   if (!scene) return;
 
