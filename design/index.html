@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lockify — The Private Vault</title>
+  <meta name="description" content="AES-256 encrypted file vault. No cloud. No accounts. No analytics. Your files never leave your device.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080808;
+      --bg-raised: #111;
+      --bg-card: #141414;
+      --bg-card-alt: #191919;
+      --teal: #3dd9a4;
+      --teal-soft: #2fb88a;
+      --teal-glow: rgba(61, 217, 164, 0.12);
+      --teal-glow-strong: rgba(61, 217, 164, 0.25);
+      --gold: #e8c368;
+      --gold-dim: rgba(232, 195, 104, 0.15);
+      --text: #eee;
+      --text-2: #999;
+      --text-3: #5a5a5a;
+      --border: #1e1e1e;
+      --border-light: #2a2a2a;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-lg: 24px;
+      --container: 1140px;
+      --section-gap: 160px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .container { max-width: var(--container); margin: 0 auto; padding: 0 40px; }
+
+    /* ═══════════════════ NOISE OVERLAY ═══════════════════ */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ═══════════════════ SCROLL PROGRESS ═══════════════════ */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--teal);
+      z-index: 1000;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ═══════════════════ NAV ═══════════════════ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(8, 8, 8, 0.9);
+      backdrop-filter: blur(24px) saturate(1.2);
+      -webkit-backdrop-filter: blur(24px) saturate(1.2);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo svg { height: 24px; display: block; }
+    .nav-center {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-center a {
+      color: var(--text-2);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-center a:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--teal);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ═══════════════════ HERO ═══════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 600px;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(61, 217, 164, 0.07) 0%, rgba(61, 217, 164, 0.03) 40%, transparent 70%);
+      pointer-events: none;
+      filter: blur(40px);
+    }
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--teal) 0%, #7ce8c8 50%, #a5f0da 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 480px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 64px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--teal);
+      color: var(--bg);
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(61, 217, 164, 0.3);
+    }
+    .btn-main svg { width: 18px; height: 18px; }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text-3); }
+
+    /* Hero phone showcase */
+    .hero-phone {
+      position: relative;
+      width: 260px;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeUp 1s 1s forwards;
+    }
+    .hero-phone img {
+      width: 100%;
+      border-radius: 28px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+      display: block;
+    }
+    .hero-phone::before {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+      z-index: -1;
+      filter: blur(30px);
+    }
+
+    /* Trust strip */
+    .trust-strip {
+      margin-top: 72px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s 1.2s forwards;
+    }
+    .trust-item {
+      font-size: 13px;
+      color: var(--text-3);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .trust-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--teal);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════ FEATURES BENTO ═══════════════════ */
+    .features {
+      padding: var(--section-gap) 0;
+    }
+    .features-header {
+      margin-bottom: 64px;
+    }
+    .features-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      max-width: 560px;
+    }
+    .features-header p {
+      color: var(--text-2);
+      font-size: 17px;
+      margin-top: 16px;
+      max-width: 440px;
+    }
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(200px, auto);
+      gap: 12px;
+    }
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.25s;
+    }
+    .bento-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+    .bento-card.span-2 { grid-column: span 2; }
+    .bento-card.tall { grid-row: span 2; }
+    .bento-card.premium { border-color: rgba(232, 195, 104, 0.12); }
+    .bento-card.premium:hover { border-color: rgba(232, 195, 104, 0.25); }
+    .bento-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--teal);
+    }
+    .bento-card.premium .bento-icon { color: var(--gold); }
+    .bento-icon svg { width: 24px; height: 24px; }
+    .bento-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .bento-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .bento-desc {
+      font-size: 14px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+    .bento-card.featured {
+      background: linear-gradient(135deg, rgba(61, 217, 164, 0.06) 0%, var(--bg-card) 60%);
+    }
+    .bento-card.featured .bento-title {
+      font-size: 24px;
+    }
+    .bento-card.featured .bento-desc {
+      font-size: 15px;
+      color: var(--text-2);
+      max-width: 320px;
+    }
+    .bento-visual {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      opacity: 0.25;
+    }
+    .bento-visual img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    /* ═══════════════════ STEALTH ═══════════════════ */
+    .stealth {
+      padding: var(--section-gap) 0;
+    }
+    .stealth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .stealth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stealth-card:hover { border-color: var(--border-light); }
+    .stealth-text { flex: 1; }
+    .stealth-text h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .stealth-text p {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .stealth-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-3);
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .tag-gold {
+      color: var(--gold);
+      border-color: rgba(232, 195, 104, 0.2);
+    }
+    .stealth-img {
+      width: 200px;
+      flex-shrink: 0;
+    }
+    .stealth-img img {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    /* ═══════════════════ HOW IT WORKS ═══════════════════ */
+    .how {
+      padding: var(--section-gap) 0;
+    }
+    .how-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .how-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .how-header p {
+      color: var(--text-2);
+      font-size: 17px;
+      margin-top: 12px;
+    }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 16.66%;
+      right: 16.66%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-light), var(--teal-glow), var(--border-light), transparent);
+    }
+    .how-step {
+      text-align: center;
+    }
+    .step-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--bg);
+      -webkit-text-stroke: 1px var(--border-light);
+      margin-bottom: 24px;
+      line-height: 1;
+      position: relative;
+    }
+    .step-num span {
+      position: relative;
+      z-index: 1;
+    }
+    .how-step h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .how-step p {
+      font-size: 14px;
+      color: var(--text-3);
+      line-height: 1.6;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════ PLEDGE ═══════════════════ */
+    .pledge {
+      padding: var(--section-gap) 0;
+    }
+    .pledge-intro {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 64px;
+      gap: 40px;
+    }
+    .pledge-intro h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .pledge-intro p {
+      color: var(--text-2);
+      font-size: 16px;
+      max-width: 360px;
+      text-align: right;
+    }
+    .pledge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .pledge-item {
+      background: var(--bg-card);
+      padding: 36px;
+    }
+    .pledge-item:hover { background: var(--bg-card-alt); }
+    .pledge-num {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 48px;
+      color: var(--border-light);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .pledge-item h4 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+    .pledge-item p {
+      font-size: 13px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════ TESTIMONIALS ═══════════════════ */
+    .testimonials {
+      padding: var(--section-gap) 0;
+    }
+    .testimonial-featured {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 64px;
+    }
+    .testimonial-quote {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+    .testimonial-quote::before {
+      content: '\201C';
+      display: block;
+      font-size: 72px;
+      line-height: 0.5;
+      color: var(--teal);
+      opacity: 0.3;
+      margin-bottom: 16px;
+      font-style: normal;
+    }
+    .testimonial-author-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .author-av {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--teal-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--teal);
+    }
+    .author-meta strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .author-meta span {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .testimonial-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .stars {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 16px;
+      color: var(--gold);
+    }
+    .stars svg { width: 14px; height: 14px; }
+    .testimonial-card p {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .tc-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tc-author .av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-2);
+    }
+    .tc-author strong { font-size: 13px; font-weight: 600; }
+    .tc-author span { font-size: 12px; color: var(--text-3); display: block; }
+
+    /* ═══════════════════ PRICING ═══════════════════ */
+    .pricing {
+      padding: var(--section-gap) 0;
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .pricing-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .pricing-header p {
+      color: var(--text-2);
+      font-size: 17px;
+      margin-top: 12px;
+    }
+    .pricing-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      position: relative;
+    }
+    .price-card.highlighted {
+      border-color: var(--teal);
+      background: linear-gradient(180deg, rgba(61, 217, 164, 0.04) 0%, var(--bg-card) 50%);
+    }
+    .price-pill {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--teal);
+      color: var(--bg);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 4px 14px;
+      border-radius: 100px;
+      text-transform: uppercase;
+    }
+    .price-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .price-desc {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 20px;
+    }
+    .price-amount {
+      font-family: 'Outfit', sans-serif;
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .price-card.highlighted .price-amount { color: var(--teal); }
+    .price-period {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 28px;
+    }
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .price-features li {
+      font-size: 14px;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .price-features li svg {
+      width: 16px;
+      height: 16px;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+    .price-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .price-btn:hover { border-color: var(--text-3); }
+    .price-btn.filled {
+      background: var(--teal);
+      color: var(--bg);
+      border-color: var(--teal);
+    }
+    .price-btn.filled:hover { opacity: 0.85; }
+
+    /* ═══════════════════ FAQ ═══════════════════ */
+    .faq {
+      padding: var(--section-gap) 0;
+    }
+    .faq-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .faq-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .faq-list {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-q {
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      gap: 16px;
+      user-select: none;
+    }
+    .faq-q svg {
+      width: 20px;
+      height: 20px;
+      color: var(--text-3);
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-q svg { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      padding-bottom: 24px;
+    }
+    .faq-a p {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════ FINAL CTA ═══════════════════ */
+    .final-cta {
+      padding: 120px 0 var(--section-gap);
+      text-align: center;
+      position: relative;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(61, 217, 164, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .final-cta h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .final-cta p {
+      font-size: 17px;
+      color: var(--text-2);
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .final-cta .btn-main { position: relative; }
+
+    /* ═══════════════════ FOOTER ═══════════════════ */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-left svg { height: 20px; }
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-social {
+      display: flex;
+      gap: 16px;
+    }
+    .footer-social a {
+      color: var(--text-3);
+      display: flex;
+      transition: color 0.2s;
+    }
+    .footer-social a:hover { color: var(--teal); }
+    .footer-social svg { width: 18px; height: 18px; }
+
+    /* ═══════════════════ SCROLL ANIMATIONS ═══════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ═══════════════════ RESPONSIVE ═══════════════════ */
+    @media (max-width: 900px) {
+      :root { --section-gap: 100px; }
+      .container { padding: 0 24px; }
+      .nav { padding: 0 24px; }
+      .nav-center { display: none; }
+      .bento { grid-template-columns: 1fr 1fr; }
+      .bento-card.span-2 { grid-column: span 2; }
+      .stealth-grid { grid-template-columns: 1fr; }
+      .stealth-card { flex-direction: column-reverse; text-align: center; }
+      .stealth-text { text-align: left; }
+      .pledge-grid { grid-template-columns: repeat(2, 1fr); }
+      .pledge-intro { flex-direction: column; align-items: flex-start; }
+      .pledge-intro p { text-align: left; }
+      .how-steps::before { display: none; }
+      .testimonial-row { grid-template-columns: 1fr; }
+      .pricing-cols { grid-template-columns: 1fr; max-width: 400px; }
+    }
+    @media (max-width: 600px) {
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.span-2 { grid-column: span 1; }
+      .pledge-grid { grid-template-columns: 1fr; }
+      .how-steps { grid-template-columns: 1fr; gap: 48px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .trust-strip { flex-direction: column; align-items: center; gap: 12px; }
+      .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">
+    <svg viewBox="0 0 555 176" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#4CC1AC" d="M78.3 8.9c1 0 2 0 3 .1 12.1.3 23.2 5 34.4 13.5 11.6 8.7 17.7 16.8 17.7 37.6 14.7 2.3 22.1 12 21 26.2-2.1 19.9 6.3 51.2-9.1 66.5-10.5 10.4-23.1 9.5-36.3 9.5l-20.3-.1c-12.9 0-25.7.3-38.6-.1-17.8-.3-31.8-12.7-32.3-30.8-.2-7.6.1-15.1.1-22.8C18 94.5 13.2 65.7 41.3 64.8c-.2-13.6.1-23.3 9.2-34.6C58.9 20 70.2 13.2 83.4 9.9c-1.7-.6-3.4-.9-5.1-1z"/>
+      <path fill="#4CC1AC" d="M79 87.3c7.5-.6 15-.2 18.4 7.2 1.8 3.9 2 8.4.4 12.6-1.9 5-5.7 8.2-10.5 10.3 0 6.6 2.2 12.1-4.4 15.8-11.3.7-9.4-7.4-9.1-15.8-5.9-3-10.5-7.3-11.4-14.2-.6-4.4.6-8.8 3.3-12.3 3.5-4.4 7.8-5.9 13.2-3.6z"/>
+      <path fill="#fefefe" d="M199.7 74.5c8.6-1.7 21-5.2 28-2.1 7 3 13.6 9 15.8 17.5 3.2 21.8-10.7 37-31.8 39.8-9.8.9-20.1-1.1-28.1-7.2-7-5.4-11.6-13.4-12.8-22.2-2.9-21.3 10.9-36.5 29.6-25.7zm7.4 52.5c10.2-1.6 17.2-11.2 15.6-21.4-1.6-10.1-11.2-17.1-21.3-15.5-10.1 1.6-16.9 11.2-15.3 21.4 1.6 10.1 10.9 17.1 21 15.5z"/>
+      <path fill="#fefefe" d="M320.3 48.2h18.1v59l25.7-31.3h21.5c-8.6 9.5-16.9 20.8-25.6 30.7l18.7 23.2 9.4 11.6-21.5-.1c-8.6-11.1-19.3-23.9-27.3-35.1v35.3h-18.1V48.2z"/>
+      <path fill="#4CC1AC" d="M474.8 75.8h19.4c1.9 3.8 4.1 10.3 5.7 14.4 4.3 10.6 8.2 21.5 12.7 32 5.2-15.4 11.2-30.7 16.5-46.5h19.2c-5.5 15.8-13.6 34.8-19.9 50.4-9.5 24.9-13.9 46.9-46.8 42.2l.1-15c11.6 2 17.7-.7 21.5-11.9-9.6-21.9-19-43.9-28.3-65.5z"/>
+      <path fill="#4CC1AC" d="M456.5 48.5h15.6v14.4c-11.8-1.7-18.4-.6-18.2 13.2 5.4-.1 11.3.1 16.7.1v14.8h-17v48.5c-1.9 1.3-14.8.7-18.1.6V91h-11.9V76.1l12.1 0c-.9-15.4 4.8-25.5 20.9-27.6z"/>
+      <path fill="#fefefe" d="M279.4 74.5c12.9-2 23.2 2.5 31.6 11.9-4.2 2.9-8.5 6.3-12.5 9.5-20.6-18.6-42.1 8.4-27.5 25.2 3.1 3.5 7.5 5.7 12.2 5.9 6.5.4 10.8-2.3 15.4-6.5l5.2 4.2c1.8 1.7 5.3 4.3 7.3 5.9-5.4 6.4-13 10.5-21.3 11.6-10 1.4-20.6-.3-28.8-6.6-7-5.3-11.5-13.2-12.6-22-2.7-20.6 10.4-36.9 31-39.1z"/>
+      <path fill="#4CC1AC" d="M395.4 75.9h18.1v65.3h-18.1c-.1-21.8-.1-43.5 0-65.3z"/>
+      <path fill="#4CC1AC" d="M400.5 44.6c5.9-1.9 12.2 1.3 14.2 7.2 2 5.9-1.3 12.2-7.2 14.2-3.8 1.3-8.1.5-11.2-2.2s-4.8-6.8-4-10.8c.8-4 4-7.2 8.2-8.4z"/>
+    </svg>
+  </div>
+  <ul class="nav-center">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stealth">Stealth</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.open('https://play.google.com/store/apps/details?id=com.lockify.vault','_blank')">Download</button>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-label">AES-256 Encrypted &middot; Android</div>
+  <h1>Privacy is not<br>a feature. <em>It's the<br>entire product.</em></h1>
+  <p class="hero-sub">The file vault that stays on your device. No cloud uploads, no accounts to create, no analytics tracking what you store. Just encryption.</p>
+  <div class="hero-actions">
+    <a class="btn-main" href="https://play.google.com/store/apps/details?id=com.lockify.vault" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.61 1.84L13.73 12 3.6 22.16c-.36-.3-.6-.79-.6-1.37V3.21c0-.58.24-1.07.61-1.37zm.98-.8L15.93 7.5l-2.93 2.93L4.59 1.04zm12.33 5.5L18.78 7.8c.54.31.88.84.88 1.46v5.48c0 .62-.34 1.15-.88 1.46l-1.86 1.27-3.2-3.2L12.8 12l4.12-5.46zm-.98.84L12.8 12l3.14 4.62-7.36 6.46L4.59 22.96 12.8 12l3.14-4.62z"/></svg>
+      Google Play
+    </a>
+    <a class="btn-outline" href="#features">Explore Features</a>
+  </div>
+  <div class="hero-phone">
+    <img src="hero-vault.jpg" alt="Lockify Vault">
+  </div>
+  <div class="trust-strip">
+    <div class="trust-item"><span class="trust-dot"></span>AES-256 Encryption</div>
+    <div class="trust-item"><span class="trust-dot"></span>100% Offline</div>
+    <div class="trust-item"><span class="trust-dot"></span>Zero Analytics</div>
+    <div class="trust-item"><span class="trust-dot"></span>Free Forever</div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p>Real encryption, not a glorified folder with a PIN code.</p>
+    </div>
+
+    <div class="bento">
+      <div class="bento-card featured span-2 reveal">
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="bento-title">AES-256 Encryption</div>
+        <div class="bento-desc">Every file encrypted with the same standard used by governments and military. No backdoors. No master keys. If you lose your PIN, even we can't recover it.</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-1">
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div class="bento-title">Biometric Unlock</div>
+        <div class="bento-desc">Fingerprint or face. Fast in, fully secure.</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-2">
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="bento-title">Photo & Video Vault</div>
+        <div class="bento-desc">Import media with a built-in viewer and slideshow.</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-3">
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+        <div class="bento-title">Encrypted Notes</div>
+        <div class="bento-desc">Private notes with rich text, encrypted at rest.</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-4">
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><line x1="1" y1="1" x2="23" y2="23"/></svg></div>
+        <div class="bento-title">Fully Offline</div>
+        <div class="bento-desc">No internet needed. Ever.</div>
+      </div>
+
+      <div class="bento-card premium reveal">
+        <div class="bento-label">Premium</div>
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div class="bento-title">Decoy Vault</div>
+        <div class="bento-desc">A second vault with a separate PIN. Show a fake vault if pressured.</div>
+      </div>
+      <div class="bento-card premium featured span-2 reveal reveal-delay-1">
+        <div class="bento-label">Premium</div>
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h2v2H8zM14 8h2v2h-2zM8 14h2v2H8zM14 14h2v2h-2zM11 11h2v2h-2z"/></svg></div>
+        <div class="bento-title">Stealth Mode</div>
+        <div class="bento-desc">Disguise Lockify as a calculator or change its name and icon completely. Hidden in plain sight on your home screen.</div>
+      </div>
+      <div class="bento-card premium reveal reveal-delay-2">
+        <div class="bento-label">Premium</div>
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="bento-title">Cloud Backup</div>
+        <div class="bento-desc">Encrypted backup to your own cloud account.</div>
+      </div>
+      <div class="bento-card premium reveal reveal-delay-3">
+        <div class="bento-label">Premium</div>
+        <div class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="bento-title">Intruder Selfie</div>
+        <div class="bento-desc">Snaps a photo on failed PIN attempts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STEALTH SHOWCASE ═══════════ -->
+<section class="stealth" id="stealth">
+  <div class="container">
+    <div class="features-header reveal">
+      <h2>The vault nobody<br>knows exists.</h2>
+      <p>Two ways to make Lockify invisible on your phone.</p>
+    </div>
+    <div class="stealth-grid">
+      <div class="stealth-card reveal">
+        <div class="stealth-text">
+          <h3>Calculator Mode</h3>
+          <p>Lockify hides behind a fully functional calculator. Enter your secret code followed by = to reveal the vault. To everyone else, it's just a math app.</p>
+          <div class="stealth-tags">
+            <span class="tag">Working calculator</span>
+            <span class="tag">Secret PIN</span>
+            <span class="tag tag-gold">Premium</span>
+          </div>
+        </div>
+        <div class="stealth-img">
+          <img src="stealth-calc.jpg" alt="Calculator stealth mode">
+        </div>
+      </div>
+      <div class="stealth-card reveal reveal-delay-1">
+        <div class="stealth-text">
+          <h3>App Disguise</h3>
+          <p>Change the app icon, name, and appearance. Pick from presets or customize completely. Your vault becomes invisible in the app drawer.</p>
+          <div class="stealth-tags">
+            <span class="tag">Custom icon</span>
+            <span class="tag">Custom name</span>
+            <span class="tag tag-gold">Premium</span>
+          </div>
+        </div>
+        <div class="stealth-img">
+          <img src="security-decoy.jpg" alt="App disguise settings">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-header reveal">
+      <h2>Three steps. Thirty seconds.</h2>
+      <p>No accounts. No setup wizards. Just privacy.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal">
+        <div class="step-num"><span>01</span></div>
+        <h4>Import</h4>
+        <p>Select photos, videos, or documents. Share from any app or pick from your gallery.</p>
+      </div>
+      <div class="how-step reveal reveal-delay-2">
+        <div class="step-num"><span>02</span></div>
+        <h4>Encrypt</h4>
+        <p>Files are encrypted with AES-256 instantly. Originals can be auto-deleted from your gallery.</p>
+      </div>
+      <div class="how-step reveal reveal-delay-4">
+        <div class="step-num"><span>03</span></div>
+        <h4>Access</h4>
+        <p>Unlock with PIN, fingerprint, or face. View, share, and manage from inside the vault.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRIVACY PLEDGE ═══════════ -->
+<section class="pledge" id="pledge">
+  <div class="container">
+    <div class="pledge-intro reveal">
+      <h2>The privacy<br>pledge.</h2>
+      <p>Six commitments we make to every user. No exceptions, no fine print, no asterisks.</p>
+    </div>
+    <div class="pledge-grid">
+      <div class="pledge-item reveal">
+        <div class="pledge-num">01</div>
+        <h4>No Cloud Storage</h4>
+        <p>Your files live on your device and nowhere else.</p>
+      </div>
+      <div class="pledge-item reveal reveal-delay-1">
+        <div class="pledge-num">02</div>
+        <h4>No Account Required</h4>
+        <p>No email. No phone number. No sign-up.</p>
+      </div>
+      <div class="pledge-item reveal reveal-delay-2">
+        <div class="pledge-num">03</div>
+        <h4>No Analytics</h4>
+        <p>Zero tracking. Zero telemetry. We don't know how you use it.</p>
+      </div>
+      <div class="pledge-item reveal reveal-delay-1">
+        <div class="pledge-num">04</div>
+        <h4>No Ads. Ever.</h4>
+        <p>No banners. No pop-ups. No sponsored anything.</p>
+      </div>
+      <div class="pledge-item reveal reveal-delay-2">
+        <div class="pledge-num">05</div>
+        <h4>No Backdoors</h4>
+        <p>Even we can't access your vault. By design.</p>
+      </div>
+      <div class="pledge-item reveal reveal-delay-3">
+        <div class="pledge-num">06</div>
+        <h4>Free Core Forever</h4>
+        <p>Encryption, vault, and biometric will always be free.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="testimonial-featured reveal">
+      <div class="testimonial-quote">Finally an app that actually encrypts files instead of just hiding them behind a PIN. The calculator stealth is genius — nobody would ever find this.</div>
+      <div class="testimonial-author-info">
+        <div class="author-av">AK</div>
+        <div class="author-meta">
+          <strong>Arjun K.</strong>
+          <span>Google Play Review</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-row">
+      <div class="testimonial-card reveal">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>"I've tried every vault app on the Play Store. This is the only one that's truly offline and doesn't upsell me every 5 seconds."</p>
+        <div class="tc-author">
+          <div class="av">SM</div>
+          <div><strong>Sarah M.</strong><span>Google Play</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>"The disguise feature is next level. Nobody scrolling through my phone would ever know this app exists. Worth every penny of premium."</p>
+        <div class="tc-author">
+          <div class="av">RV</div>
+          <div><strong>Ravi V.</strong><span>Google Play</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>"Simple, clean, does exactly what it says. No bloat, no unnecessary permissions. This is how every privacy app should work."</p>
+        <div class="tc-author">
+          <div class="av">PL</div>
+          <div><strong>Priya L.</strong><span>Google Play</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PRICING ═══════════ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <h2>Simple pricing.</h2>
+      <p>Core encryption is free. Premium unlocks stealth and advanced protection.</p>
+    </div>
+    <div class="pricing-cols">
+      <div class="price-card reveal">
+        <div class="price-name">Free</div>
+        <div class="price-desc">Everything to get started</div>
+        <div class="price-amount">$0</div>
+        <div class="price-period">forever</div>
+        <ul class="price-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>AES-256 Encryption</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Biometric Unlock</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Photo & Video Vault</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Encrypted Notes</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Fully Offline</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>PIN & Pattern Lock</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Ad-Free</li>
+        </ul>
+        <a class="price-btn" href="#">Download Free</a>
+      </div>
+      <div class="price-card highlighted reveal reveal-delay-1">
+        <div class="price-pill">Most Popular</div>
+        <div class="price-name">Premium</div>
+        <div class="price-desc">Maximum stealth & protection</div>
+        <div class="price-amount">Unlock</div>
+        <div class="price-period">one-time or subscription</div>
+        <ul class="price-features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Calculator Stealth</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>App Disguise</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Decoy Vault</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Cloud Backup</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Intruder Selfie</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Priority Support</li>
+        </ul>
+        <a class="price-btn filled" href="#">Get Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-header reveal">
+      <h2>Questions.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Is Lockify really free?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Yes. Encryption, biometric unlock, the vault, and notes are completely free with no limits. Premium features like stealth mode and cloud backup are optional upgrades.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          What happens if I forget my PIN?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Your vault is protected by real encryption. Without your PIN, even we cannot recover your data. This is by design — it means nobody else can either.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Does Lockify upload my files anywhere?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Never. All encryption happens on-device. The optional cloud backup encrypts locally before uploading to your own cloud account — we never see the contents.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          How does calculator stealth work?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Lockify disguises itself as a working calculator. Type your secret PIN followed by = to reveal the vault. To everyone else, it looks and works like a normal math app.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Can I transfer my vault to a new phone?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Yes. Premium users can create encrypted backups to Google Drive or local storage, then restore on any Android device. Free users can manually transfer the vault folder.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          Is Lockify available on iOS?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div class="faq-a"><p>Lockify is currently Android-only. We're focused on making the best possible Android experience before expanding to other platforms.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FINAL CTA ═══════════ -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Ready to lock<br>it down?</h2>
+    <p class="reveal reveal-delay-1">Join thousands who chose real privacy. Free forever.</p>
+    <a class="btn-main reveal reveal-delay-2" href="https://play.google.com/store/apps/details?id=com.lockify.vault" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.61 1.84L13.73 12 3.6 22.16c-.36-.3-.6-.79-.6-1.37V3.21c0-.58.24-1.07.61-1.37zm.98-.8L15.93 7.5l-2.93 2.93L4.59 1.04zm12.33 5.5L18.78 7.8c.54.31.88.84.88 1.46v5.48c0 .62-.34 1.15-.88 1.46l-1.86 1.27-3.2-3.2L12.8 12l4.12-5.46zm-.98.84L12.8 12l3.14 4.62-7.36 6.46L4.59 22.96 12.8 12l3.14-4.62z"/></svg>
+      Download on Google Play
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <svg viewBox="0 0 555 176" xmlns="http://www.w3.org/2000/svg" style="height:20px">
+          <path fill="#4CC1AC" d="M78.3 8.9c1 0 2 0 3 .1 12.1.3 23.2 5 34.4 13.5 11.6 8.7 17.7 16.8 17.7 37.6 14.7 2.3 22.1 12 21 26.2-2.1 19.9 6.3 51.2-9.1 66.5-10.5 10.4-23.1 9.5-36.3 9.5l-20.3-.1c-12.9 0-25.7.3-38.6-.1-17.8-.3-31.8-12.7-32.3-30.8-.2-7.6.1-15.1.1-22.8C18 94.5 13.2 65.7 41.3 64.8c-.2-13.6.1-23.3 9.2-34.6C58.9 20 70.2 13.2 83.4 9.9c-1.7-.6-3.4-.9-5.1-1z"/>
+          <path fill="#4CC1AC" d="M79 87.3c7.5-.6 15-.2 18.4 7.2 1.8 3.9 2 8.4.4 12.6-1.9 5-5.7 8.2-10.5 10.3 0 6.6 2.2 12.1-4.4 15.8-11.3.7-9.4-7.4-9.1-15.8-5.9-3-10.5-7.3-11.4-14.2-.6-4.4.6-8.8 3.3-12.3 3.5-4.4 7.8-5.9 13.2-3.6z"/>
+        </svg>
+        <span class="footer-copy">&copy; 2024 Lockify. All rights reserved.</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="/privacy.html">Privacy Policy</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li><a href="/updates/">What's New</a></li>
+      </ul>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/getlockify/" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 010 2.5 1.25 1.25 0 010-2.5M12 7a5 5 0 110 10 5 5 0 010-10m0 2a3 3 0 100 6 3 3 0 000-6z"/></svg></a>
+        <a href="https://x.com/getlockify" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('scrollProgress').style.width = (window.scrollY / h * 100) + '%';
+  });
+
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Parallax on hero phone
+  const heroPhone = document.querySelector('.hero-phone');
+  window.addEventListener('scroll', () => {
+    if (heroPhone) {
+      const speed = 0.3;
+      heroPhone.style.transform = `translateY(${window.scrollY * speed}px)`;
+    }
+  });
+</script>
+
+</body>
+</html>
