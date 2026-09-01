@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/orbit-scene.css">
   <link rel="stylesheet" href="css/orbit-hover.css">
+  <link rel="stylesheet" href="css/orbit-expand.css">
 </head>
 <body>
 
@@ -41,39 +42,39 @@
 
     <!-- Orbit ring (3D tilted plane) -->
     <div class="orbit-ring">
-      <div class="orbit-card" data-hover-title="AES-256 Encryption" data-hover-desc="Military-grade encryption keeping every file locked tight.">
+      <div class="orbit-card" data-hover-title="AES-256 Encryption" data-hover-desc="Military-grade encryption keeping every file locked tight." data-expand-desc="Every file is encrypted with AES-256, the same standard used by governments and military worldwide. No backdoors, no master keys. If you lose your PIN, even we cannot recover your data — by design.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
         <span class="orbit-card-label">AES-256</span>
       </div>
-      <div class="orbit-card" data-hover-title="Biometric Unlock" data-hover-desc="Fingerprint or face unlock for instant secure access.">
+      <div class="orbit-card" data-hover-title="Biometric Unlock" data-hover-desc="Fingerprint or face unlock for instant secure access." data-expand-desc="Unlock your vault instantly with your fingerprint or face. Biometric authentication provides the fastest way in while keeping your files fully protected behind hardware-level security.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="orbit-card-label">Biometric</span>
       </div>
-      <div class="orbit-card" data-hover-title="Photo & Video Vault" data-hover-desc="Import and view media with a built-in encrypted viewer.">
+      <div class="orbit-card" data-hover-title="Photo & Video Vault" data-hover-desc="Import and view media with a built-in encrypted viewer." data-expand-desc="Import photos and videos directly into the encrypted vault. Browse with the built-in viewer, run slideshows, and share files securely — all without exposing them to your gallery or other apps.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
         <span class="orbit-card-label">Photo Vault</span>
       </div>
-      <div class="orbit-card" data-hover-title="Encrypted Notes" data-hover-desc="Private rich-text notes encrypted at rest on your device.">
+      <div class="orbit-card" data-hover-title="Encrypted Notes" data-hover-desc="Private rich-text notes encrypted at rest on your device." data-expand-desc="Write private notes with rich text formatting. Every note is encrypted at rest on your device — perfect for passwords, journal entries, or any text you want to keep truly private.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>
         <span class="orbit-card-label">Encrypted Notes</span>
       </div>
-      <div class="orbit-card" data-hover-title="100% Offline" data-hover-desc="No internet connection needed. Your data never leaves your device.">
+      <div class="orbit-card" data-hover-title="100% Offline" data-hover-desc="No internet connection needed. Your data never leaves your device." data-expand-desc="Lockify works entirely offline. Your files are encrypted and stored locally on your device — nothing is uploaded, nothing is phoned home. No servers, no accounts, no internet required. Your data stays yours.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="2" x2="22" y2="22"/></svg></span>
         <span class="orbit-card-label">100% Offline</span>
       </div>
-      <div class="orbit-card premium" data-hover-title="Stealth Mode" data-hover-desc="Disguise the app as a calculator or change its identity completely.">
+      <div class="orbit-card premium" data-hover-title="Stealth Mode" data-hover-desc="Disguise the app as a calculator or change its identity completely." data-expand-desc="Make Lockify disappear in plain sight. Disguise the app icon and splash screen as a calculator, notes app, or any custom identity. Nobody browsing your phone will suspect a vault is hiding underneath.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h2v2H8zM14 8h2v2h-2zM11 11h2v2h-2z"/></svg></span>
         <span class="orbit-card-label">Stealth Mode</span>
       </div>
-      <div class="orbit-card premium" data-hover-title="Decoy Vault" data-hover-desc="A second vault with a separate PIN for plausible deniability.">
+      <div class="orbit-card premium" data-hover-title="Decoy Vault" data-hover-desc="A second vault with a separate PIN for plausible deniability." data-expand-desc="Set up a second vault with its own PIN. If someone forces you to open the app, enter the decoy PIN instead — they see a harmless dummy vault while your real files stay hidden and encrypted behind your actual PIN.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></span>
         <span class="orbit-card-label">Decoy Vault</span>
       </div>
-      <div class="orbit-card premium" data-hover-title="Cloud Backup" data-hover-desc="Encrypted backup to your own cloud storage account.">
+      <div class="orbit-card premium" data-hover-title="Cloud Backup" data-hover-desc="Encrypted backup to your own cloud storage account." data-expand-desc="Back up your encrypted vault to Google Drive, Dropbox, or OneDrive. Files are encrypted before they leave your device — your cloud provider never sees the plaintext. Restore on any device with your PIN.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
         <span class="orbit-card-label">Cloud Backup</span>
       </div>
-      <div class="orbit-card premium" data-hover-title="Motion Lock" data-hover-desc="Auto-locks when suspicious motion is detected after screen off.">
+      <div class="orbit-card premium" data-hover-title="Motion Lock" data-hover-desc="Auto-locks when suspicious motion is detected after screen off." data-expand-desc="Motion Lock uses your device's sensors to detect when your phone is picked up by someone else while the screen is off. If suspicious motion is detected, the vault instantly locks itself — even if it was left open.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
         <span class="orbit-card-label">Motion Lock</span>
       </div>
@@ -92,9 +93,10 @@
 <script type="module">
   import { initOrbitAnimation } from './js/orbit-animation.js';
   import { initOrbitHover } from './js/orbit-hover.js';
+  import { initOrbitExpand } from './js/orbit-expand.js';
 
   document.addEventListener('DOMContentLoaded', () => {
-    initOrbitAnimation({
+    const orbitAPI = initOrbitAnimation({
       container: '#orbit-container',
       scene:     '.orbit-scene',
       lock:      '.orbit-lock',
@@ -102,6 +104,7 @@
       cards:     '.orbit-card',
     });
     initOrbitHover('.orbit-scene');
+    initOrbitExpand('.orbit-scene', orbitAPI);
   });
 </script>
 

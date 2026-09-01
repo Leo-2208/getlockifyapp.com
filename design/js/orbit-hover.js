@@ -28,6 +28,8 @@ export function initOrbitHover(sceneSelector) {
   cards.forEach(card => {
     card.addEventListener('mouseenter', () => {
       if (parseFloat(card.style.opacity || 0) < 0.4) return;
+      if (card.classList.contains('ejected')) return;
+      if (scene.classList.contains('expand-active')) return;
       active = card;
       showHover(card, scene, box, path, dotStart, dotEnd);
     });

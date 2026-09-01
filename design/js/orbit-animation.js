@@ -7,6 +7,8 @@
  * 3. Ring spins continuously throughout
  * 4. Cards collapse one-by-one back into lock, leaving the spinning ring
  * 5. Lock closes
+ *
+ * Returns an API object for other modules (hover, expand) to interact with.
  */
 
 export function initOrbitAnimation(selectors) {
@@ -23,6 +25,8 @@ export function initOrbitAnimation(selectors) {
   if (!container || !cards.length) return;
 
   const N = cards.length;
+  const ejected = new Set();
+  const cardPositions = new Array(N).fill(null);
 
   function getRadius() {
     var vw = window.innerWidth;
@@ -36,11 +40,15 @@ export function initOrbitAnimation(selectors) {
     shackleOpen: -38,
     shackleClosed: 0,
     revolutions: 2.5,
+    tilt: -Math.PI / 9,
   };
 
   var ENTER_ANGLE = 0;
   var EXIT_ANGLE  = Math.PI;
   var DIR = 1;
+
+  var cosTilt = Math.cos(cfg.tilt);
+  var sinTilt = Math.sin(cfg.tilt);
 
   function getProgress() {
     var rect = container.getBoundingClientRect();
@@ -135,23 +143,22 @@ export function initOrbitAnimation(selectors) {
       var vis = Math.min(emergeT, 1 - collapseT);
 
       if (vis <= 0.01) {
-        card.style.opacity = '0';
-        card.style.transform = 'translate(-50%, -50%) scale(0)';
-        card.classList.remove('hoverable');
+        cardPositions[i] = null;
+        if (!ejected.has(i)) {
+          card.style.opacity = '0';
+          card.style.transform = 'translate(-50%, -50%) scale(0)';
+          card.classList.remove('hoverable');
+        }
         continue;
       }
 
       var slotAngle = (i / N) * Math.PI * 2;
-
-      // Current orbit position for this card's slot
       var orbitPos = slotAngle + fullOrbitAngle;
 
       var angle;
       if (emergeT < 1) {
-        // Emerging: blend from entry point into the spinning ring
         angle = lerp(ENTER_ANGLE, orbitPos, emergeT);
       } else if (collapseT > 0) {
-        // Collapsing: peel off the spinning ring toward exit (left side)
         var exitTarget = EXIT_ANGLE;
         if (DIR > 0) {
           while (exitTarget <= orbitPos) exitTarget += Math.PI * 2;
@@ -160,13 +167,14 @@ export function initOrbitAnimation(selectors) {
         }
         angle = lerp(orbitPos, exitTarget, collapseT);
       } else {
-        // Fully on the ring
         angle = orbitPos;
       }
 
       var r = getRadius();
-      var x = Math.cos(angle) * r.x * vis;
-      var y = Math.sin(angle) * r.y * vis;
+      var rawX = Math.cos(angle) * r.x * vis;
+      var rawY = Math.sin(angle) * r.y * vis;
+      var x = rawX * cosTilt - rawY * sinTilt;
+      var y = rawX * sinTilt + rawY * cosTilt;
 
       var depthRaw = Math.sin(angle);
       var depthNorm = (depthRaw + 1) / 2;
@@ -176,6 +184,10 @@ export function initOrbitAnimation(selectors) {
       var finalScale = vis * depthScale;
       var finalOpacity = vis * depthOpacity;
       var zIndex = Math.round(depthNorm * 100);
+
+      cardPositions[i] = { x: x, y: y, scale: finalScale, opacity: finalOpacity, zIndex: zIndex };
+
+      if (ejected.has(i)) continue;
 
       card.style.transform =
         'translate(-50%, -50%) translate(' + x + 'px, ' + y + 'px) scale(' + finalScale + ')';
@@ -188,4 +200,12 @@ export function initOrbitAnimation(selectors) {
   }
 
   requestAnimationFrame(render);
+
+  return {
+    ejectCard: function(i) { ejected.add(i); },
+    returnCard: function(i) { ejected.delete(i); },
+    getProgress: getProgress,
+    getCardIndex: function(card) { return cards.indexOf(card); },
+    getCardPosition: function(i) { return cardPositions[i]; },
+  };
 }
