@@ -22,6 +22,40 @@ export function initOrbitAnimation(selectors) {
   const wordmark  = scene.querySelector('.orbit-wordmark');
   const tag       = scene.querySelector('.orbit-tag');
 
+  const lockSvg = lock.querySelector('.lock-svg');
+  const lockBodyGroup = lock.querySelector('.lock-body');
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+
+  var defs = document.createElementNS(svgNS, 'defs');
+
+  var keyholeShapeClip = document.createElementNS(svgNS, 'clipPath');
+  keyholeShapeClip.setAttribute('id', 'keyhole-shape-clip');
+  var ksCircle = document.createElementNS(svgNS, 'circle');
+  ksCircle.setAttribute('cx', '44.5');
+  ksCircle.setAttribute('cy', '51.5');
+  ksCircle.setAttribute('r', '7.6');
+  var ksPin = document.createElementNS(svgNS, 'rect');
+  ksPin.setAttribute('x', '41.0');
+  ksPin.setAttribute('y', '57.0');
+  ksPin.setAttribute('width', '6.9');
+  ksPin.setAttribute('height', '9.8');
+  ksPin.setAttribute('rx', '3.0');
+  keyholeShapeClip.appendChild(ksCircle);
+  keyholeShapeClip.appendChild(ksPin);
+  defs.appendChild(keyholeShapeClip);
+
+  lockSvg.insertBefore(defs, lockSvg.firstChild);
+
+  var maskOverlay = document.createElementNS(svgNS, 'rect');
+  maskOverlay.setAttribute('x', '36');
+  maskOverlay.setAttribute('width', '18');
+  maskOverlay.setAttribute('y', '43.9');
+  maskOverlay.setAttribute('height', '22.9');
+  maskOverlay.setAttribute('style', 'fill: #0c0e0d');
+  maskOverlay.setAttribute('clip-path', 'url(#keyhole-shape-clip)');
+  lockBodyGroup.appendChild(maskOverlay);
+
   if (!container || !cards.length) return;
 
   const N = cards.length;
@@ -31,15 +65,15 @@ export function initOrbitAnimation(selectors) {
   function getRadius() {
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var x = Math.min(280, vw * 0.22);
-    var y = Math.min(120, vh * 0.14, x * 0.45);
+    var x = Math.min(400, vw * 0.26);
+    var y = Math.min(170, vh * 0.17, x * 0.45);
     return { x: x, y: y };
   }
 
   const cfg = {
     shackleOpen: -38,
     shackleClosed: 0,
-    revolutions: 2.5,
+    revolutions: 3.2,
     tilt: -Math.PI / 9,
   };
 
@@ -79,6 +113,12 @@ export function initOrbitAnimation(selectors) {
    */
   function render() {
     var p = getProgress();
+
+    // --- Keyhole reveal (bottom-to-top, p=0 full cover → p=0.88 gone) ---
+    var fillT    = smoothstep(0, 0.88, p);
+    var overlayH = 22.9 * (1 - fillT);
+    maskOverlay.setAttribute('y', '43.9');
+    maskOverlay.setAttribute('height', String(overlayH));
 
     // --- Shackle ---
     var openT  = smoothstep(0.08, 0.15, p);

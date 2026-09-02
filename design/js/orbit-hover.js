@@ -18,10 +18,13 @@ export function initOrbitHover(sceneSelector) {
 
   const { box, path, dotStart, dotEnd } = createHoverElements(scene);
   let active = null;
+  let pendingRAF = 0;
 
   function dismiss() {
     if (!active) return;
     active = null;
+    cancelAnimationFrame(pendingRAF);
+    pendingRAF = 0;
     hideHover(box, path, dotStart, dotEnd);
   }
 
@@ -31,7 +34,17 @@ export function initOrbitHover(sceneSelector) {
       if (card.classList.contains('ejected')) return;
       if (scene.classList.contains('expand-active')) return;
       active = card;
-      showHover(card, scene, box, path, dotStart, dotEnd);
+      prepareHover(card, scene, box, path, dotStart, dotEnd);
+      cancelAnimationFrame(pendingRAF);
+      var target = card;
+      pendingRAF = requestAnimationFrame(() => {
+        if (active !== target) return;
+        box.classList.add('active');
+        path.style.transition = 'stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        path.style.strokeDashoffset = '0';
+        dotStart.style.opacity = '1';
+        dotEnd.style.opacity = '1';
+      });
     });
 
     card.addEventListener('mouseleave', () => {
@@ -71,22 +84,22 @@ function createHoverElements(scene) {
   return { box, path, dotStart, dotEnd };
 }
 
-function showHover(card, scene, box, path, dotStart, dotEnd) {
-  const isPremium = card.classList.contains('premium');
-  const title = card.dataset.hoverTitle || card.querySelector('.orbit-card-label')?.textContent || '';
-  const desc = card.dataset.hoverDesc || '';
+function prepareHover(card, scene, box, path, dotStart, dotEnd) {
+  var isPremium = card.classList.contains('premium');
+  var title = card.dataset.hoverTitle || card.querySelector('.orbit-card-label')?.textContent || '';
+  var desc = card.dataset.hoverDesc || '';
 
   box.querySelector('.orbit-info-title').textContent = title;
   box.querySelector('.orbit-info-desc').textContent = desc;
   box.classList.toggle('premium', isPremium);
 
-  const sceneRect = scene.getBoundingClientRect();
-  const cardRect = card.getBoundingClientRect();
+  var sceneRect = scene.getBoundingClientRect();
+  var cardRect = card.getBoundingClientRect();
 
-  const cx = cardRect.left + cardRect.width / 2 - sceneRect.left;
-  const cy = cardRect.top + cardRect.height / 2 - sceneRect.top;
-  const sceneW = sceneRect.width;
-  const mid = sceneW / 2;
+  var cx = cardRect.left + cardRect.width / 2 - sceneRect.left;
+  var cy = cardRect.top + cardRect.height / 2 - sceneRect.top;
+  var sceneW = sceneRect.width;
+  var mid = sceneW / 2;
   var onRight = cx >= mid;
 
   var gap = 50;
@@ -100,21 +113,17 @@ function showHover(card, scene, box, path, dotStart, dotEnd) {
 
   positionInfoBox(box, cx, cy, cardRect.width, onRight);
   drawConnector(path, dotStart, dotEnd, cx, cy, cardRect.width, onRight, isPremium);
-
-  requestAnimationFrame(() => {
-    box.classList.add('active');
-    path.style.strokeDashoffset = '0';
-    dotStart.style.opacity = '1';
-    dotEnd.style.opacity = '1';
-  });
 }
 
 function hideHover(box, path, dotStart, dotEnd) {
   box.classList.remove('active');
   dotStart.style.opacity = '0';
   dotEnd.style.opacity = '0';
-  const len = path.getTotalLength();
-  path.style.strokeDashoffset = len;
+  var d = path.getAttribute('d');
+  if (d) {
+    path.style.transition = 'stroke-dashoffset 0.3s ease';
+    path.style.strokeDashoffset = path.getTotalLength();
+  }
 }
 
 function positionInfoBox(box, cx, cy, cardW, onRight) {
@@ -156,8 +165,4 @@ function drawConnector(path, dotStart, dotEnd, cx, cy, cardW, onRight, isPremium
   dotEnd.setAttribute('cx', ex);
   dotEnd.setAttribute('cy', ey);
   dotEnd.setAttribute('fill', color);
-
-  requestAnimationFrame(() => {
-    path.style.transition = 'stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-  });
 }
