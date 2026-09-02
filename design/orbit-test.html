@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/orbit-expand.css">
   <link rel="stylesheet" href="css/nav-reveal.css">
   <link rel="stylesheet" href="css/hero-reveal.css">
+  <link rel="stylesheet" href="css/screenshots.css">
 </head>
 <body>
 
@@ -126,10 +127,103 @@
   </div>
 </div>
 
-<!-- Content after hero (placeholder) -->
+<!-- Screenshots — horizontal scroll-jack slideshow -->
+<div class="screenshots-container" id="screenshots-container">
+  <div class="screenshots-scene">
+    <div class="screenshots-header">
+      <h2>See it in action</h2>
+      <p>Tap any screen to learn more</p>
+    </div>
+
+    <div class="screenshots-viewport">
+      <div class="screenshots-track">
+
+        <div class="screenshot-card" data-title="Your Vault" data-desc="A clean, organized file manager built for privacy. Browse your encrypted files by type — photos, videos, documents, and notes — all in one secure place.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+              <span class="screen-label">Vault home</span>
+            </div></div>
+          </div>
+          <div class="card-label">Your Vault</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Photo Vault" data-desc="Import photos and videos directly into the encrypted vault. Browse with the built-in viewer, run slideshows, and share securely — without exposing files to your gallery.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+              <span class="screen-label">Photo viewer</span>
+            </div></div>
+          </div>
+          <div class="card-label">Photo Vault</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Encrypted Notes" data-desc="Write private notes with rich text formatting. Every note is encrypted at rest on your device — perfect for passwords, journal entries, or anything truly private.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
+              <span class="screen-label">Notes editor</span>
+            </div></div>
+          </div>
+          <div class="card-label">Encrypted Notes</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Stealth Mode" data-desc="Disguise the app icon and splash screen as a calculator, notes app, or any custom identity. Nobody browsing your phone will suspect a vault is hiding underneath.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h2v2H8zM14 8h2v2h-2zM11 11h2v2h-2zM8 14h2v2H8zM14 14h2v2h-2z"/></svg></span>
+              <span class="screen-label">Disguise settings</span>
+            </div></div>
+          </div>
+          <div class="card-label">Stealth Mode</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Biometric Unlock" data-desc="Unlock your vault instantly with your fingerprint or face. Hardware-level biometric authentication provides the fastest way in while keeping files fully protected.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+              <span class="screen-label">Fingerprint</span>
+            </div></div>
+          </div>
+          <div class="card-label">Biometric Unlock</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Cloud Backup" data-desc="Back up your encrypted vault to Google Drive, Dropbox, or OneDrive. Files are encrypted before leaving your device — your cloud provider never sees the plaintext.">
+          <div class="phone-frame">
+            <div class="phone-screen"><div class="phone-screen-inner">
+              <span class="screen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
+              <span class="screen-label">Backup settings</span>
+            </div></div>
+          </div>
+          <div class="card-label">Cloud Backup</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="screenshots-dots">
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+    </div>
+
+    <!-- Detail overlay -->
+    <div class="screenshot-detail">
+      <div class="detail-title"></div>
+      <div class="detail-desc"></div>
+      <button class="detail-close">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Content after screenshots (placeholder) -->
 <section id="content-start" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
   <h1 style="font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 700; color: #eee;">
-    Site content begins here
+    Site content continues here
   </h1>
 </section>
 
@@ -138,6 +232,7 @@
   import { initOrbitHover } from './js/orbit-hover.js';
   import { initOrbitExpand } from './js/orbit-expand.js';
   import { initHeroReveal } from './js/hero-reveal.js';
+  import { initScreenshots } from './js/screenshots.js';
 
   document.addEventListener('DOMContentLoaded', () => {
     const orbitAPI = initOrbitAnimation({
@@ -152,6 +247,10 @@
     initHeroReveal({
       container: '#hero-container',
       scene:     '.hero-scene',
+    });
+    initScreenshots({
+      container: '#screenshots-container',
+      scene:     '.screenshots-scene',
     });
   });
 </script>
