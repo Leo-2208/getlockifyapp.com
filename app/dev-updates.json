@@ -1,7 +1,15 @@
 {
-  "contentVersion": 1,
+  "contentVersion": 2,
   "updatesUrl": "https://getlockifyapp.com/updates",
   "updates": [
+    {
+      "id": "notes-crash-fix",
+      "date": "Sep 2026",
+      "badge": "Notice",
+      "icon": "announcement",
+      "title": "Notes Crash - Fix Coming Soon",
+      "body": "A crash affecting some users on the Notes screen has been identified. A fix is being prepared and will be published shortly. Thank you for your patience."
+    },
     {
       "id": "encrypted-notes",
       "date": "Aug 2026",
