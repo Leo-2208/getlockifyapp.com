@@ -1,0 +1,50 @@
+/* ═══════════════════ STATS BAR ═══════════════════ */
+
+.stats-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.stats-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(20, 24, 22, 0.7);
+  border: 1px solid rgba(61, 217, 164, 0.09);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.stat {
+  padding: 26px 20px;
+  text-align: center;
+}
+
+.stat + .stat {
+  border-left: 1px solid rgba(61, 217, 164, 0.07);
+}
+
+.stat-val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--teal);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 960px) {
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat:nth-child(3) { border-left: none; border-top: 1px solid rgba(61, 217, 164, 0.07); }
+}

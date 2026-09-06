@@ -1,0 +1,251 @@
+/**
+ * Orbit Animation Engine
+ *
+ * Scroll-driven animation with continuous spin:
+ * 1. Lock opens
+ * 2. Cards emerge one-by-one, joining the already-spinning ring
+ * 3. Ring spins continuously throughout
+ * 4. Cards collapse one-by-one back into lock, leaving the spinning ring
+ * 5. Lock closes
+ *
+ * Returns an API object for other modules (hover, expand) to interact with.
+ */
+
+export function initOrbitAnimation(selectors) {
+  const container = document.querySelector(selectors.container);
+  const lock      = document.querySelector(selectors.lock);
+  const cards     = Array.from(document.querySelectorAll(selectors.cards));
+  const shackle   = lock.querySelector('.lock-shackle');
+  const glow      = lock.querySelector('.orbit-lock-glow');
+  const ripple    = lock.querySelector('.orbit-lock-ripple');
+  const scene     = document.querySelector(selectors.scene);
+  const wordmark  = scene.querySelector('.orbit-wordmark');
+  const tag       = scene.querySelector('.orbit-tag');
+
+  const lockSvg = lock.querySelector('.lock-svg');
+  const lockBodyGroup = lock.querySelector('.lock-body');
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+
+  var defs = document.createElementNS(svgNS, 'defs');
+
+  var keyholeShapeClip = document.createElementNS(svgNS, 'clipPath');
+  keyholeShapeClip.setAttribute('id', 'keyhole-shape-clip');
+  var ksCircle = document.createElementNS(svgNS, 'circle');
+  ksCircle.setAttribute('cx', '44.5');
+  ksCircle.setAttribute('cy', '51.5');
+  ksCircle.setAttribute('r', '7.6');
+  var ksPin = document.createElementNS(svgNS, 'rect');
+  ksPin.setAttribute('x', '41.0');
+  ksPin.setAttribute('y', '57.0');
+  ksPin.setAttribute('width', '6.9');
+  ksPin.setAttribute('height', '9.8');
+  ksPin.setAttribute('rx', '3.0');
+  keyholeShapeClip.appendChild(ksCircle);
+  keyholeShapeClip.appendChild(ksPin);
+  defs.appendChild(keyholeShapeClip);
+
+  lockSvg.insertBefore(defs, lockSvg.firstChild);
+
+  var maskOverlay = document.createElementNS(svgNS, 'rect');
+  maskOverlay.setAttribute('x', '36');
+  maskOverlay.setAttribute('width', '18');
+  maskOverlay.setAttribute('y', '43.9');
+  maskOverlay.setAttribute('height', '22.9');
+  maskOverlay.setAttribute('style', 'fill: #0c0e0d');
+  maskOverlay.setAttribute('clip-path', 'url(#keyhole-shape-clip)');
+  lockBodyGroup.appendChild(maskOverlay);
+
+  if (!container || !cards.length) return;
+
+  const N = cards.length;
+  const ejected = new Set();
+  const cardPositions = new Array(N).fill(null);
+
+  function getRadius() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var x = Math.min(400, vw * 0.26);
+    var y = Math.min(170, vh * 0.17, x * 0.45);
+    return { x: x, y: y };
+  }
+
+  const cfg = {
+    shackleOpen: -38,
+    shackleClosed: 0,
+    revolutions: 3.2,
+    tilt: -Math.PI / 9,
+  };
+
+  var ENTER_ANGLE = 0;
+  var EXIT_ANGLE  = Math.PI;
+  var DIR = 1;
+
+  var cosTilt = Math.cos(cfg.tilt);
+  var sinTilt = Math.sin(cfg.tilt);
+
+  function getProgress() {
+    var rect = container.getBoundingClientRect();
+    var scrollable = container.offsetHeight - window.innerHeight;
+    if (scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  }
+
+  function smoothstep(edge0, edge1, x) {
+    var t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  /**
+   * Phases:
+   *  0.00 - 0.08  Locked, static
+   *  0.08 - 0.15  Shackle opens
+   *  0.15 - 0.85  Continuous spin. Cards emerge 0.15–0.35, collapse 0.65–0.85
+   *  0.82 - 0.88  Shackle closes
+   *  0.88 - 0.92  Glow pulse + ripple ring
+   *  0.90 - 0.95  Wordmark fades in
+   *  0.92 - 0.97  Tagline fades in
+   *  0.97 - 1.00  Hold
+   */
+  function render() {
+    var p = getProgress();
+
+    // --- Keyhole reveal (bottom-to-top, p=0 full cover → p=0.88 gone) ---
+    var fillT    = smoothstep(0, 0.88, p);
+    var overlayH = 22.9 * (1 - fillT);
+    maskOverlay.setAttribute('y', '43.9');
+    maskOverlay.setAttribute('height', String(overlayH));
+
+    // --- Shackle ---
+    var openT  = smoothstep(0.08, 0.15, p);
+    var closeT = smoothstep(0.82, 0.88, p);
+    var shackleAngle = p < 0.5
+      ? lerp(cfg.shackleClosed, cfg.shackleOpen, openT)
+      : lerp(cfg.shackleOpen, cfg.shackleClosed, closeT);
+    shackle.style.transform = 'rotate(' + shackleAngle + 'deg)';
+
+    // --- Glow: visible during orbit, pulses brighter after lock ---
+    var glowIn  = smoothstep(0.08, 0.18, p);
+    var glowOut = smoothstep(0.65, 0.82, p);
+    var glowLock = smoothstep(0.88, 0.92, p);
+    if (p < 0.65) {
+      glow.style.opacity = glowIn;
+    } else if (p < 0.88) {
+      glow.style.opacity = 1 - glowOut;
+    } else {
+      glow.style.opacity = glowLock;
+    }
+
+    // --- Ripple: expanding ring after lock closes ---
+    var rippleT = smoothstep(0.88, 0.94, p);
+    ripple.style.opacity = rippleT < 0.5 ? rippleT * 1.8 : (1 - rippleT) * 1.8;
+    ripple.style.transform = 'scale(' + lerp(0.85, 1.6, rippleT) + ')';
+
+    // --- Wordmark: "Lockify" fades in after lock ---
+    var wmT = smoothstep(0.90, 0.95, p);
+    var lockRect = lock.getBoundingClientRect();
+    var sceneRect = scene.getBoundingClientRect();
+    var lockCenterY = lockRect.top + lockRect.height / 2 - sceneRect.top;
+    var lockCenterX = lockRect.left + lockRect.width / 2 - sceneRect.left;
+
+    wordmark.style.opacity = wmT;
+    wordmark.style.transform = 'translate(-50%, 0) translateY(' + lerp(8, 0, wmT) + 'px)';
+    wordmark.style.left = lockCenterX + 'px';
+    wordmark.style.top = (lockCenterY + lockRect.height / 2 + 28) + 'px';
+
+    // --- Tag: "Local Encrypted Vault" fades in after wordmark ---
+    var tagT = smoothstep(0.92, 0.97, p);
+    tag.style.opacity = tagT;
+    tag.style.transform = 'translate(-50%, 0) translateY(' + lerp(8, 0, tagT) + 'px)';
+    tag.style.left = lockCenterX + 'px';
+    tag.style.top = (lockCenterY + lockRect.height / 2 + 64) + 'px';
+
+    // --- Continuous orbit: spins from 0.15 to 0.85 ---
+    var orbitT = smoothstep(0.15, 0.82, p);
+    var fullOrbitAngle = DIR * cfg.revolutions * Math.PI * 2 * orbitT;
+
+    // --- Cards ---
+    for (var i = 0; i < N; i++) {
+      var card = cards[i];
+
+      var emergeStart = 0.15 + (i / N) * 0.17;
+      var emergeEnd   = emergeStart + 0.05;
+      var emergeT     = smoothstep(emergeStart, emergeEnd, p);
+
+      var collapseStart = 0.62 + (i / N) * 0.15;
+      var collapseEnd   = collapseStart + 0.05;
+      var collapseT     = smoothstep(collapseStart, collapseEnd, p);
+
+      var vis = Math.min(emergeT, 1 - collapseT);
+
+      if (vis <= 0.01) {
+        cardPositions[i] = null;
+        if (!ejected.has(i)) {
+          card.style.opacity = '0';
+          card.style.transform = 'translate(-50%, -50%) scale(0)';
+          card.classList.remove('hoverable');
+        }
+        continue;
+      }
+
+      var slotAngle = (i / N) * Math.PI * 2;
+      var orbitPos = slotAngle + fullOrbitAngle;
+
+      var angle;
+      if (emergeT < 1) {
+        angle = lerp(ENTER_ANGLE, orbitPos, emergeT);
+      } else if (collapseT > 0) {
+        var exitTarget = EXIT_ANGLE;
+        if (DIR > 0) {
+          while (exitTarget <= orbitPos) exitTarget += Math.PI * 2;
+        } else {
+          while (exitTarget >= orbitPos) exitTarget -= Math.PI * 2;
+        }
+        angle = lerp(orbitPos, exitTarget, collapseT);
+      } else {
+        angle = orbitPos;
+      }
+
+      var r = getRadius();
+      var rawX = Math.cos(angle) * r.x * vis;
+      var rawY = Math.sin(angle) * r.y * vis;
+      var x = rawX * cosTilt - rawY * sinTilt;
+      var y = rawX * sinTilt + rawY * cosTilt;
+
+      var depthRaw = Math.sin(angle);
+      var depthNorm = (depthRaw + 1) / 2;
+      var depthScale = lerp(0.6, 1.3, depthNorm);
+      var depthOpacity = lerp(0.3, 1.0, depthNorm);
+
+      var finalScale = vis * depthScale;
+      var finalOpacity = vis * depthOpacity;
+      var zIndex = Math.round(depthNorm * 100);
+
+      cardPositions[i] = { x: x, y: y, scale: finalScale, opacity: finalOpacity, zIndex: zIndex };
+
+      if (ejected.has(i)) continue;
+
+      card.style.transform =
+        'translate(-50%, -50%) translate(' + x + 'px, ' + y + 'px) scale(' + finalScale + ')';
+      card.style.opacity = finalOpacity;
+      card.style.zIndex = zIndex;
+      card.classList.toggle('hoverable', finalOpacity > 0.3);
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+
+  return {
+    ejectCard: function(i) { ejected.add(i); },
+    returnCard: function(i) { ejected.delete(i); },
+    getProgress: getProgress,
+    getCardIndex: function(card) { return cards.indexOf(card); },
+    getCardPosition: function(i) { return cardPositions[i]; },
+  };
+}

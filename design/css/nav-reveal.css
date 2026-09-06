@@ -1,0 +1,117 @@
+/* ═══════════════════ NAV BAR ═══════════════════ */
+
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(12, 14, 13, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(61, 217, 164, 0.07);
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.site-nav.revealed {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Logo */
+.site-nav .nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.site-nav .nav-logo img {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+/* Links */
+.site-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav .nav-links a {
+  color: var(--text-2);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+
+.site-nav .nav-links a:hover {
+  color: var(--teal);
+}
+
+/* CTA button */
+.site-nav .nav-cta {
+  background: var(--teal);
+  color: #0c0e0d !important;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 500 !important;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.site-nav .nav-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════ STAGGER REVEAL ═══════════════════ */
+
+.site-nav .nav-item {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.site-nav.revealed .nav-item {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(var(--i, 0) * 80ms + 100ms);
+}
+
+/* CTA gets a scale pop */
+.site-nav .nav-item-cta {
+  transform: translateY(-10px) scale(0.92);
+}
+
+.site-nav.revealed .nav-item-cta {
+  transform: translateY(0) scale(1);
+  transition: opacity 0.35s ease,
+              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--i, 0) * 80ms + 100ms);
+}
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+
+@media (max-width: 960px) {
+  .site-nav {
+    padding: 14px 24px;
+  }
+
+  .site-nav .nav-links li:not(:last-child) {
+    display: none;
+  }
+}

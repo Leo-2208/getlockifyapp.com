@@ -5,10 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lockify – Local Encrypted Vault</title>
   <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline by default. No analytics. Your files, only yours." />
-  <link rel="icon" type="image/png" href="Lockify_Logo.png">
-  <link rel="apple-touch-icon" href="Lockify_Logo.png">
+  <link rel="icon" type="image/png" href="../Lockify_Logo.png">
+  <link rel="apple-touch-icon" href="../Lockify_Logo.png">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="design/dist/style.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/orbit-scene.css">
+  <link rel="stylesheet" href="css/orbit-hover.css">
+  <link rel="stylesheet" href="css/orbit-expand.css">
+  <link rel="stylesheet" href="css/nav-reveal.css">
+  <link rel="stylesheet" href="css/hero-reveal.css">
+  <link rel="stylesheet" href="css/screenshots.css">
+  <link rel="stylesheet" href="css/stats.css">
+  <link rel="stylesheet" href="css/features.css">
+  <link rel="stylesheet" href="css/stealth.css">
+  <link rel="stylesheet" href="css/faq.css">
+  <link rel="stylesheet" href="css/cta.css">
+  <link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
 
@@ -20,10 +33,10 @@
   </symbol>
 </svg>
 
-<!-- NAV -->
+<!-- NAV — hidden during orbit, reveals on scroll past -->
 <nav class="site-nav" id="site-nav">
   <a href="#" class="nav-logo nav-item" style="--i:0">
-    <img src="Lockify_text.svg" alt="Lockify" />
+    <img src="../Lockify_text.svg" alt="Lockify" />
   </a>
   <ul class="nav-links">
     <li class="nav-item" style="--i:1"><a href="#features">Features</a></li>
@@ -33,9 +46,11 @@
   </ul>
 </nav>
 
-<!-- Orbit -->
+<!-- Scroll container: 500vh tall, scene sticks inside it -->
 <div class="orbit-container" id="orbit-container">
   <div class="orbit-scene">
+
+    <!-- Lock icon (exact paths from existing splash) -->
     <div class="orbit-lock">
       <div class="orbit-lock-glow"></div>
       <div class="orbit-lock-ripple"></div>
@@ -58,6 +73,7 @@
     <div class="orbit-wordmark">Lockify</div>
     <div class="orbit-tag">Local Encrypted Vault</div>
 
+    <!-- Orbit ring (3D tilted plane) -->
     <div class="orbit-ring">
       <div class="orbit-card" data-hover-title="Encrypted Vault" data-hover-desc="Files are encrypted before being written to storage — invisible to other apps." data-expand-desc="Files are encrypted before being written to storage — invisible to other apps and system file browsers, even with physical device access.">
         <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
@@ -100,12 +116,13 @@
   </div>
 </div>
 
-<!-- Hero -->
+<!-- Hero reveal — overlaps last 100vh of orbit, paints on top -->
 <div class="hero-container" id="hero-container">
   <div class="hero-scene">
     <div class="hero-backdrop"></div>
     <div class="hero-glow"></div>
 
+    <!-- Hero content -->
     <div class="hero-content">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
@@ -124,6 +141,7 @@
         </a>
       </div>
 
+      <!-- Social strip -->
       <div class="hero-social">
         <span class="hero-social-label">Follow</span>
         <a href="https://x.com/getlockify" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on X">
@@ -140,7 +158,7 @@
   </div>
 </div>
 
-<!-- Screenshots -->
+<!-- Screenshots — horizontal scroll-jack slideshow -->
 <div class="screenshots-container" id="screenshots-container">
   <div class="screenshots-scene">
     <div class="screenshots-header">
@@ -154,7 +172,7 @@
         <div class="screenshot-card" data-title="Your Vault" data-desc="A clean, organized file manager built for privacy. Browse your encrypted files by type — photos, videos, documents, and notes — all in one secure place.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-vault.png" alt="Lockify Vault" loading="lazy" />
+              <img src="assets/screen-vault.png" alt="Lockify Vault" loading="lazy" />
             </div>
           </div>
           <div class="card-label">Your Vault</div>
@@ -163,7 +181,7 @@
         <div class="screenshot-card" data-title="In-App File Viewer" data-desc="View images, videos, and PDFs directly inside the app. Temporary decrypted copies are cleaned up automatically after viewing.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-gallery.png" alt="In-App File Viewer" loading="lazy" />
+              <img src="assets/screen-gallery.png" alt="In-App File Viewer" loading="lazy" />
             </div>
           </div>
           <div class="card-label">File Viewer</div>
@@ -172,7 +190,7 @@
         <div class="screenshot-card" data-title="Folders & Organization" data-desc="Create folders to keep files organized your way. Easy to navigate, rename, and rearrange — all within the secure vault.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-folders.png" alt="Folders & Organization" loading="lazy" />
+              <img src="assets/screen-folders.png" alt="Folders & Organization" loading="lazy" />
             </div>
           </div>
           <div class="card-label">Folders</div>
@@ -181,7 +199,7 @@
         <div class="screenshot-card" data-title="Calculator Stealth Mode" data-desc="Lockify completely disguises itself as a working calculator. Enter your secret PIN sequence on the calculator to unlock. To everyone else — it's just a calculator app.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-calculator.png" alt="Calculator Stealth Mode" loading="lazy" />
+              <img src="assets/screen-calculator.png" alt="Calculator Stealth Mode" loading="lazy" />
             </div>
           </div>
           <div class="card-label">Calculator Stealth</div>
@@ -190,7 +208,7 @@
         <div class="screenshot-card" data-title="Biometric Auth" data-desc="Unlock with fingerprint or face unlock. Android handles all biometrics — Lockify only receives a pass or fail result.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-biometric.png" alt="Biometric Auth" loading="lazy" />
+              <img src="assets/screen-biometric.png" alt="Biometric Auth" loading="lazy" />
             </div>
           </div>
           <div class="card-label">Biometric Auth</div>
@@ -199,7 +217,7 @@
         <div class="screenshot-card" data-title="Cloud Sync" data-desc="Back up your vault to your own Google Drive, encrypted on your device before it ever leaves. Only you hold the key.">
           <div class="phone-frame">
             <div class="phone-screen">
-              <img src="design/assets/screen-cloudsync.png" alt="Cloud Sync" loading="lazy" />
+              <img src="assets/screen-cloudsync.png" alt="Cloud Sync" loading="lazy" />
             </div>
           </div>
           <div class="card-label">Cloud Sync</div>
@@ -217,6 +235,7 @@
       <span class="screenshots-dot"></span>
     </div>
 
+    <!-- Detail overlay -->
     <div class="screenshot-detail">
       <div class="detail-title"></div>
       <div class="detail-desc"></div>
@@ -226,7 +245,7 @@
   </div>
 </div>
 
-<!-- Stats -->
+<!-- STATS -->
 <div class="stats-wrap reveal">
   <div class="stats-inner">
     <div class="stat">
@@ -248,7 +267,7 @@
   </div>
 </div>
 
-<!-- Features -->
+<!-- FEATURES -->
 <section class="features" id="features">
   <div class="feat-hd reveal">
     <span class="mono-tag">Everything you need</span>
@@ -305,12 +324,12 @@
   </div>
 </section>
 
-<!-- Stealth -->
+<!-- STEALTH -->
 <section class="stealth" id="stealth">
   <div class="stealth-card reveal">
     <div class="stealth-vis">
       <div class="stealth-phone">
-        <img src="design/assets/screen-calculator.png" alt="Calculator stealth mode disguise" />
+        <img src="assets/screen-calculator.png" alt="Calculator stealth mode disguise" />
       </div>
     </div>
     <div class="stealth-txt">
@@ -388,14 +407,14 @@
   </a>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer class="site-footer">
-  <a href="#"><img src="Lockify_text.svg" alt="Lockify" /></a>
+  <a href="#"><img src="../Lockify_text.svg" alt="Lockify" /></a>
   <ul class="ft-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="privacy.html">Privacy Policy</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="../privacy.html">Privacy Policy</a></li>
+    <li><a href="../contact.html">Contact</a></li>
   </ul>
   <div class="ft-social">
     <a href="https://x.com/getlockify" class="ft-social-link" target="_blank" rel="noopener" aria-label="Lockify on X">
@@ -411,7 +430,37 @@
   <span class="ft-copy">&copy; 2026 Lockify. Built for privacy.</span>
 </footer>
 
-<script src="design/dist/app.min.js"></script>
+<script type="module">
+  import { initOrbitAnimation } from './js/orbit-animation.js';
+  import { initOrbitHover } from './js/orbit-hover.js';
+  import { initOrbitExpand } from './js/orbit-expand.js';
+  import { initHeroReveal } from './js/hero-reveal.js';
+  import { initScreenshots } from './js/screenshots.js';
+  import { initScrollReveal } from './js/scroll-reveal.js';
+  import { initFaq } from './js/faq.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const orbitAPI = initOrbitAnimation({
+      container: '#orbit-container',
+      scene:     '.orbit-scene',
+      lock:      '.orbit-lock',
+      ring:      '.orbit-ring',
+      cards:     '.orbit-card',
+    });
+    initOrbitHover('.orbit-scene');
+    initOrbitExpand('.orbit-scene', orbitAPI);
+    initHeroReveal({
+      container: '#hero-container',
+      scene:     '.hero-scene',
+    });
+    initScreenshots({
+      container: '#screenshots-container',
+      scene:     '.screenshots-scene',
+    });
+    initScrollReveal();
+    initFaq();
+  });
+</script>
 
 </body>
 </html>
