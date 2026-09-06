@@ -9,6 +9,13 @@
   <link rel="apple-touch-icon" href="Lockify_Logo.png">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="design/dist/style.min.css">
+  <style>
+    .scroll-hint{position:fixed;bottom:28px;right:28px;z-index:999;opacity:.6;transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+    .scroll-hint.hidden{opacity:0;transform:translateY(10px)}
+    .scroll-hint svg{width:36px;height:36px;filter:drop-shadow(0 0 6px rgba(61,217,164,.3));animation:scrollBounce 2s ease-in-out infinite}
+    @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+    @media(max-width:768px){.scroll-hint{bottom:20px;right:20px}.scroll-hint svg{width:28px;height:28px}}
+  </style>
 </head>
 <body>
 
@@ -411,7 +418,17 @@
   <span class="ft-copy">&copy; 2026 Lockify. Built for privacy.</span>
 </footer>
 
+<!-- Scroll hint arrow -->
+<div class="scroll-hint" id="scroll-hint">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#3dd9a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+</div>
+
 <script src="design/dist/app.min.js"></script>
+<script>
+(function(){var h=document.getElementById('scroll-hint');if(!h)return;var t;window.addEventListener('scroll',function(){if(!t)t=requestAnimationFrame(function(){h.classList.toggle('hidden',window.scrollY>100);t=0})},{passive:true})})();
+</script>
 
 </body>
 </html>
