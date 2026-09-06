@@ -105,38 +105,12 @@
   position: relative;
 }
 
-/* Placeholder gradient — replace with real screenshots */
-.phone-screen-inner {
+.phone-screen img {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px 16px;
-  background: linear-gradient(160deg, #0f1311 0%, #121a16 100%);
-}
-
-.phone-screen-inner .screen-icon {
-  width: 36px;
-  height: 36px;
-  color: var(--teal);
-  opacity: 0.6;
-}
-
-.phone-screen-inner .screen-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.phone-screen-inner .screen-label {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--text-2);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
+  object-fit: cover;
+  object-position: top;
+  display: block;
 }
 
 /* Card label below phone */
