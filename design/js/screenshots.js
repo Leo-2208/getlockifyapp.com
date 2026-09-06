@@ -37,6 +37,39 @@ export function initScreenshots(selectors) {
     return { maxShift: trackW - viewW, viewW: viewW };
   }
 
+  function scrollToCard(i) {
+    var metrics = getTrackMetrics();
+    var cardRect = cards[i].getBoundingClientRect();
+    var cardCenter = cardRect.left + cardRect.width / 2;
+    var viewCenter = metrics.viewW / 2;
+    var offset = cardCenter - viewCenter;
+
+    // Skip scroll if card is already near center
+    if (Math.abs(offset) < 10) return;
+
+    var p = getProgress();
+    var currentSlideT = smoothstep(0.06, 0.92, p);
+    var currentShift = currentSlideT * metrics.maxShift;
+
+    var targetShift = Math.max(0, Math.min(currentShift + offset, metrics.maxShift));
+    var targetSlideT = metrics.maxShift > 0 ? targetShift / metrics.maxShift : 0;
+    targetSlideT = Math.max(0, Math.min(1, targetSlideT));
+
+    // Analytical inverse of smoothstep: 3t²-2t³ = v  →  t = 0.5 - sin(asin(1-2v)/3)
+    var t = 0.5 - Math.sin(Math.asin(1 - 2 * targetSlideT) / 3);
+    var targetP = t * 0.86 + 0.06;
+
+    // Don't scroll backward if the track is already at its limit
+    if (offset > 0 && targetP < p) return;
+    if (offset < 0 && targetP > p) return;
+
+    var containerRect = container.getBoundingClientRect();
+    var scrollable = container.offsetHeight - window.innerHeight;
+    var targetScrollY = window.scrollY + containerRect.top + targetP * scrollable;
+
+    window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+  }
+
   function render() {
     var p = getProgress();
 
@@ -76,8 +109,8 @@ export function initScreenshots(selectors) {
     requestAnimationFrame(render);
   }
 
-  // Click to show detail
-  cards.forEach(function (card) {
+  // Click to scroll-center card + show detail
+  cards.forEach(function (card, i) {
     card.addEventListener('click', function () {
       var title = card.getAttribute('data-title');
       var desc = card.getAttribute('data-desc');
@@ -85,6 +118,8 @@ export function initScreenshots(selectors) {
       detailDesc.textContent = desc;
       detail.classList.add('open');
       detailOpen = true;
+
+      scrollToCard(i);
     });
   });
 

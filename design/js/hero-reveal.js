@@ -9,6 +9,7 @@ export function initHeroReveal(selectors) {
   var headline = scene.querySelector('.hero-headline');
   var sub      = scene.querySelector('.hero-sub');
   var ctas     = scene.querySelector('.hero-ctas');
+  var social   = scene.querySelector('.hero-social');
   var content  = scene.querySelector('.hero-content');
   var nav      = document.querySelector('#site-nav');
 
@@ -83,6 +84,13 @@ export function initHeroReveal(selectors) {
     var ctaT = smoothstep(0.46, 0.60, p);
     ctas.style.opacity = ctaT;
     ctas.style.transform = 'translateY(' + lerp(20, 0, ctaT) + 'px)';
+
+    // Social strip
+    if (social) {
+      var socialT = smoothstep(0.54, 0.66, p);
+      social.style.opacity = socialT;
+      social.style.transform = 'translateY(' + lerp(14, 0, socialT) + 'px)';
+    }
 
     // Nav reveal
     if (nav) {

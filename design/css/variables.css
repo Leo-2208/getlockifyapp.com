@@ -1,8 +1,9 @@
 :root {
-  --bg: #080808;
+  --bg: #0c0e0d;
   --bg-raised: #111;
   --bg-card: #141414;
   --bg-card-alt: #191919;
+  --card: #161917;
 
   --teal: #3dd9a4;
   --teal-soft: #2fb88a;
