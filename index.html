@@ -1,1013 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lockify – Local Encrypted Vault</title>
   <meta name="description" content="Lockify is a privacy-first encrypted file vault for Android. 100% offline by default. No analytics. Your files, only yours." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="Lockify_Logo.png">
-  <link rel="alternate icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="Lockify_Logo.png">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ── INTRO SPLASH ── */
-    #intro-splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #0c0e0d;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 28px;
-      pointer-events: all;
-    }
-
-    #intro-splash.fade-out {
-      animation: splashFadeOut 0.75s 0.05s ease forwards;
-    }
-
-    @keyframes splashFadeOut {
-      to { opacity: 0; pointer-events: none; }
-    }
-
-    .splash-lock {
-      position: relative;
-      width: 96px;
-      height: 96px;
-    }
-
-    /* SVG lock parts */
-    .lock-svg {
-      width: 96px;
-      height: 96px;
-      overflow: visible;
-    }
-
-    /* Shackle pivots at its LEFT base point (27.0, 31.6) — always connected to lock body.
-       Open  = rotate(-38deg): right arm floats up and outward, disconnected
-       Locked = rotate(0deg):  full U arch, right arm slots down into lock body */
-    .lock-shackle {
-      transform-origin: 27.0px 31.6px;
-      transform: rotate(-38deg);
-      animation: shackleClose 0.75s 0.65s cubic-bezier(0.22, 1.45, 0.45, 1) forwards;
-    }
-
-    @keyframes shackleClose {
-      from { transform: rotate(-38deg); }
-      to   { transform: rotate(0deg); }
-    }
-
-    /* Glow ring around lock */
-    .splash-glow {
-      position: absolute;
-      inset: -24px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(61,217,164,0.18) 0%, transparent 70%);
-      opacity: 0;
-      animation: glowIn 0.5s 1.3s ease forwards;
-    }
-
-    @keyframes glowIn {
-      to { opacity: 1; }
-    }
-
-    /* Ripple ring */
-    .splash-ripple {
-      position: absolute;
-      inset: -12px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(61,217,164,0.35);
-      opacity: 0;
-      animation: rippleOut 0.7s 1.35s ease forwards;
-    }
-
-    @keyframes rippleOut {
-      0%   { opacity: 0.9; transform: scale(0.85); }
-      100% { opacity: 0;   transform: scale(1.5); }
-    }
-
-    /* Wordmark under lock */
-    .splash-wordmark {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 1.6rem;
-      letter-spacing: -0.02em;
-      color: #e4eae5;
-      opacity: 0;
-      transform: translateY(8px);
-      animation: wordmarkIn 0.45s 1.0s ease forwards;
-    }
-
-    @keyframes wordmarkIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Tagline */
-    .splash-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #3dd9a4;
-      opacity: 0;
-      animation: wordmarkIn 0.4s 1.15s ease forwards;
-    }
-
-    /* Hide page content until splash done */
-    body.splash-active {
-      overflow: hidden;
-    }
-
-    :root {
-      --teal: #3dd9a4;
-      --teal-dim: #2ab888;
-      --teal-glow: rgba(61, 217, 164, 0.15);
-      --bg: #0c0e0d;
-      --bg2: #131615;
-      --card: #161917;
-      --card-border: rgba(61, 217, 164, 0.1);
-      --text: #e4eae5;
-      --text-muted: #768a7c;
-      --text-dim: #3f5245;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-      line-height: 1.65;
-    }
-
-    /* No noise overlay — solid background for clean rendering */
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 48px;
-      background: rgba(12,14,13,0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(61,217,164,0.07);
-    }
-
-    .nav-logo img {
-      height: 26px;
-      width: auto;
-      display: block;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 400;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--teal); }
-
-    .nav-cta {
-      background: var(--teal) !important;
-      color: #0c0e0d !important;
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-weight: 500 !important;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-
-    .nav-cta:hover { opacity: 0.88 !important; transform: translateY(-1px); color: #0c0e0d !important; }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 130px 24px 60px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero-glow {
-      position: absolute;
-      width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 65%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -58%);
-      pointer-events: none;
-    }
-
-    .hero-dots {
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(rgba(61,217,164,0.18) 1px, transparent 1px);
-      background-size: 40px 40px;
-      mask-image: radial-gradient(ellipse 70% 55% at 50% 38%, black 20%, transparent 80%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(61,217,164,0.07);
-      border: 1px solid rgba(61,217,164,0.18);
-      border-radius: 100px;
-      padding: 6px 16px 6px 10px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--teal);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-      animation: fadeUp 0.55s ease both;
-    }
-
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--teal);
-      flex-shrink: 0;
-      animation: blink 2.5s infinite;
-    }
-
-    @keyframes blink {
-      0%,100% { opacity:1; } 50% { opacity: 0.25; }
-    }
-
-    .hero h1 {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: clamp(2.6rem, 6.5vw, 5rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      max-width: 760px;
-      margin-bottom: 22px;
-      animation: fadeUp 0.55s 0.08s ease both;
-    }
-
-    .hero h1 .accent { color: var(--teal); }
-
-    .hero-sub {
-      font-size: clamp(0.95rem, 1.8vw, 1.12rem);
-      color: var(--text-muted);
-      max-width: 500px;
-      margin-bottom: 44px;
-      font-weight: 300;
-      line-height: 1.72;
-      animation: fadeUp 0.55s 0.16s ease both;
-    }
-
-    .hero-ctas {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-      animation: fadeUp 0.55s 0.24s ease both;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: var(--teal);
-      color: #0c0e0d;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 0.92rem;
-      padding: 13px 26px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 0 48px rgba(61,217,164,0.22);
-    }
-
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-      box-shadow: 0 0 64px rgba(61,217,164,0.32);
-    }
-
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
-      font-size: 0.92rem;
-      padding: 13px 26px;
-      border-radius: 10px;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.09);
-      transition: border-color 0.2s, color 0.2s, transform 0.15s;
-    }
-
-    .btn-ghost:hover {
-      border-color: rgba(61,217,164,0.28);
-      color: var(--teal);
-      transform: translateY(-2px);
-    }
-
-    /* ────────────────────────────────────────────────
-       PHONE SHOWCASE
-       Problem: Dark app screenshots on dark bg = invisible
-       Solution:
-       1. Phone frame is notably lighter (#1e2421) than page bg (#0c0e0d)
-       2. A frosted "stage" platform sits behind all phones
-       3. Teal glow border on center phone draws the eye
-       4. Heavy drop shadow separates device from bg
-    ──────────────────────────────────────────────── */
-    .phones-stage {
-      position: relative;
-      margin-top: 64px;
-      padding: 40px 48px 48px;
-      animation: fadeUp 0.7s 0.32s ease both;
-    }
-
-    /* The frosted stage behind the phones */
-    .phones-stage::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(30,36,33,0.0) 0%, rgba(30,36,33,0.45) 40%, rgba(30,36,33,0.55) 100%);
-      border-radius: 32px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .phones-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* The device frame — substantially lighter than the page bg */
-    .phone {
-      background: #252b27;   /* noticeably lighter = contrast against #0c0e0d */
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    /* Status bar strip */
-    .phone::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 26px;
-      background: #1a1f1c;
-      z-index: 2;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    /* Notch */
-    .phone::after {
-      content: '';
-      position: absolute;
-      top: 7px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 52px; height: 11px;
-      background: #0c0e0d;
-      border-radius: 6px;
-      z-index: 3;
-    }
-
-    .phone img {
-      display: block;
-      width: 100%;
-      height: auto;
-      margin-top: 26px;
-    }
-
-    /* Side phones */
-    .phone-wrap.side {
-      opacity: 0.5;
-      transform: scale(0.87) translateY(24px);
-      transition: opacity 0.35s, transform 0.35s;
-      cursor: pointer;
-    }
-
-    .phone-wrap.side:hover {
-      opacity: 0.7;
-      transform: scale(0.9) translateY(14px);
-    }
-
-    .phone-wrap.side .phone {
-      width: 148px;
-      border: 1.5px solid rgba(255,255,255,0.07);
-      box-shadow:
-        0 20px 50px rgba(0,0,0,0.75),
-        0 0 0 1px rgba(255,255,255,0.03);
-    }
-
-    /* Center phone */
-    .phone-wrap.center {
-      z-index: 2;
-      position: relative;
-    }
-
-    .phone-wrap.center .phone {
-      width: 188px;
-      border: 1.5px solid rgba(61,217,164,0.28);
-      background: #2a312d;  /* slightly lighter still for the center hero */
-      box-shadow:
-        0 44px 90px rgba(0,0,0,0.85),
-        0 0 0 1px rgba(255,255,255,0.05),
-        0 0 70px rgba(61,217,164,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.07);
-    }
-
-    /* Glow beneath center phone */
-    .phone-wrap.center::after {
-      content: '';
-      position: absolute;
-      bottom: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px; height: 16px;
-      background: radial-gradient(ellipse, rgba(61,217,164,0.16) 0%, transparent 70%);
-    }
-
-    /* ── STATS ── */
-    .stats-wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 880px;
-      margin: 64px auto 0;
-      padding: 0 24px;
-    }
-
-    .stats-inner {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: rgba(20,24,22,0.7);
-      border: 1px solid rgba(61,217,164,0.09);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    .stat {
-      padding: 26px 20px;
-      text-align: center;
-    }
-
-    .stat + .stat { border-left: 1px solid rgba(61,217,164,0.07); }
-
-    .stat-val {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: var(--teal);
-      letter-spacing: -0.02em;
-      line-height: 1;
-      margin-bottom: 5px;
-    }
-
-    .stat-lbl {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.67rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    /* ── SHARED ── */
-    section { position: relative; z-index: 1; }
-
-    .mono-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--teal);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    h2.sh {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.7rem, 3.6vw, 2.6rem);
-      line-height: 1.13;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
-    }
-
-    .sdesc {
-      color: var(--text-muted);
-      font-size: 0.96rem;
-      font-weight: 300;
-      line-height: 1.72;
-    }
-
-    /* ── FEATURES ── */
-    .features {
-      padding: 120px 24px;
-      max-width: 1060px;
-      margin: 0 auto;
-    }
-
-    .feat-hd {
-      text-align: center;
-      max-width: 540px;
-      margin: 0 auto 60px;
-    }
-
-    .feat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(61,217,164,0.07);
-      border: 1px solid rgba(61,217,164,0.09);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .feat {
-      background: var(--bg);
-      padding: 34px 26px;
-      transition: background 0.25s;
-    }
-
-    .feat:hover { background: var(--card); }
-
-    .feat-ico {
-      width: 42px; height: 42px;
-      border-radius: 11px;
-      background: rgba(61,217,164,0.08);
-      border: 1px solid rgba(61,217,164,0.16);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .feat-ico svg {
-      width: 19px; height: 19px;
-      stroke: var(--teal);
-      fill: none;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .feat h3 {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 600;
-      font-size: 0.98rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .feat p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.68;
-    }
-
-    .feat-premium-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--teal);
-      background: rgba(61,217,164,0.08);
-      border: 1px solid rgba(61,217,164,0.2);
-      padding: 3px 9px 3px 6px;
-      border-radius: 100px;
-      line-height: 1;
-    }
-
-    .feat-premium-badge svg {
-      width: 10px;
-      height: 10px;
-      fill: currentColor;
-      flex-shrink: 0;
-    }
-
-    /* ── STEALTH ── */
-    .stealth {
-      padding: 0 24px 100px;
-      max-width: 1060px;
-      margin: 0 auto;
-    }
-
-    .stealth-card {
-      display: grid;
-      grid-template-columns: 1fr 1.45fr;
-      background: var(--card);
-      border: 1px solid rgba(61,217,164,0.1);
-      border-radius: 22px;
-      overflow: hidden;
-      align-items: stretch;
-    }
-
-    /*
-      Stealth visual: deliberately darker bg (#0f1210) 
-      so the phone's lighter frame (#252b27) pops clearly
-    */
-    .stealth-vis {
-      background: #0f1210;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 52px 36px;
-      position: relative;
-      border-right: 1px solid rgba(61,217,164,0.07);
-    }
-
-    .stealth-vis::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 70% at 50% 65%, rgba(61,217,164,0.07) 0%, transparent 70%);
-    }
-
-    .stealth-vis .phone {
-      width: 162px;
-      border: 1.5px solid rgba(61,217,164,0.28);
-      box-shadow:
-        0 36px 80px rgba(0,0,0,0.9),
-        0 0 72px rgba(61,217,164,0.13),
-        0 0 0 1px rgba(255,255,255,0.04);
-      position: relative;
-      z-index: 1;
-    }
-
-    .stealth-txt {
-      padding: 52px 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .stealth-txt h2 { margin-bottom: 16px; }
-
-    .stealth-txt p {
-      font-size: 0.91rem;
-      color: var(--text-muted);
-      line-height: 1.76;
-      margin-bottom: 12px;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 22px;
-    }
-
-    .tg {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--teal);
-      background: rgba(61,217,164,0.07);
-      border: 1px solid rgba(61,217,164,0.13);
-      padding: 4px 10px;
-      border-radius: 5px;
-      letter-spacing: 0.04em;
-    }
-
-    .stealth-solo {
-      margin-top: 20px;
-      background: var(--card);
-      border: 1px solid rgba(61,217,164,0.1);
-      border-radius: 22px;
-      padding: 44px 48px;
-    }
-
-    .stealth-solo .mono-tag {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .stealth-solo p {
-      font-size: 0.91rem;
-      color: var(--text-muted);
-      line-height: 1.76;
-      margin-bottom: 12px;
-    }
-
-    /* ── PLEDGE ── */
-    .pledge {
-      padding: 80px 24px;
-      max-width: 1060px;
-      margin: 0 auto;
-    }
-
-    .pledge-hd {
-      text-align: center;
-      margin-bottom: 52px;
-    }
-
-    .pledge-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(61,217,164,0.07);
-      border: 1px solid rgba(61,217,164,0.09);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .pl-item {
-      background: linear-gradient(155deg, #161917 0%, #0f1210 100%);
-      padding: 38px 30px;
-    }
-
-    .pl-n {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.64rem;
-      color: var(--teal);
-      opacity: 0.4;
-      letter-spacing: 0.1em;
-      margin-bottom: 14px;
-    }
-
-    .pl-item h3 {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 600;
-      font-size: 0.98rem;
-      margin-bottom: 9px;
-    }
-
-    .pl-item p {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      line-height: 1.68;
-    }
-
-    /* ── FAQ ── */
-    .faq {
-      padding: 96px 24px 72px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .faq-hd { text-align: center; margin-bottom: 44px; }
-
-    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.054); }
-
-    .faq-btn {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.96rem;
-      font-weight: 400;
-      padding: 20px 0;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      transition: color 0.2s;
-    }
-
-    .faq-btn:hover { color: var(--teal); }
-
-    .faq-btn svg {
-      width: 16px; height: 16px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      flex-shrink: 0;
-      transition: transform 0.28s;
-    }
-
-    .faq-item.open .faq-btn { color: var(--teal); }
-    .faq-item.open .faq-btn svg { transform: rotate(45deg); }
-
-    .faq-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.32s ease;
-    }
-
-    .faq-item.open .faq-body { max-height: 220px; }
-
-    .faq-body p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.75;
-      padding-bottom: 20px;
-    }
-
-    /* ── CTA ── */
-    .cta-band {
-      padding: 80px 24px 100px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-band::before {
-      content: '';
-      position: absolute;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(61,217,164,0.07) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .cta-band h2 { font-size: clamp(1.9rem, 4.5vw, 3.1rem); margin-bottom: 12px; }
-    .cta-band p { color: var(--text-muted); margin-bottom: 36px; font-size: 0.97rem; }
-
-    /* ── HERO SOCIAL STRIP ── */
-    .hero-social {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 28px;
-      animation: fadeUp 0.55s 0.36s ease both;
-    }
-
-    .hero-social-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-right: 4px;
-    }
-
-    .hero-social-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-
-    .hero-social-link:hover {
-      color: var(--teal);
-      border-color: rgba(61,217,164,0.25);
-      background: rgba(61,217,164,0.05);
-    }
-
-    .hero-social-link svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
-
-    /* ── FOOTER SOCIAL ── */
-    .ft-social {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .ft-social-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 7px;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-
-    .ft-social-link:hover {
-      color: var(--teal);
-      border-color: rgba(61,217,164,0.25);
-      background: rgba(61,217,164,0.05);
-    }
-
-    .ft-social-link svg {
-      width: 13px;
-      height: 13px;
-      fill: currentColor;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.045);
-      padding: 34px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    footer a img { height: 20px; width: auto; display: block; }
-
-    .ft-links {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-      flex-wrap: wrap;
-    }
-
-    .ft-links a {
-      color: var(--text-dim);
-      font-size: 0.82rem;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .ft-links a:hover { color: var(--teal); }
-
-    .ft-copy {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.71rem;
-      color: var(--text-dim);
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(26px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-
-    .reveal.in { opacity: 1; transform: translateY(0); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 960px) {
-      nav { padding: 14px 24px; }
-      .nav-links li:not(:last-child) { display: none; }
-      .feat-grid { grid-template-columns: 1fr 1fr; }
-      .stealth-card { grid-template-columns: 1fr; }
-      .stealth-vis { border-right: none; border-bottom: 1px solid rgba(61,217,164,0.07); padding: 36px 24px; }
-      .stealth-txt { padding: 36px 28px; }
-      .stealth-solo { padding: 36px 28px; }
-      .pledge-grid { grid-template-columns: 1fr; }
-      .stats-inner { grid-template-columns: repeat(2, 1fr); }
-      .stat:nth-child(3) { border-left: none; border-top: 1px solid rgba(61,217,164,0.07); }
-      footer { padding: 28px 24px; flex-direction: column; align-items: center; text-align: center; }
-      .ft-links { justify-content: center; }
-      .ft-social { justify-content: center; }
-    }
-
-    @media (max-width: 600px) {
-      .feat-grid { grid-template-columns: 1fr; }
-      .phone-wrap.side { display: none; }
-      .phone-wrap.center .phone { width: 210px; }
-      .phones-stage { padding: 28px 24px 36px; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design/dist/style.min.css">
 </head>
 <body>
 
+<!-- Crown icon for premium badges -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <symbol id="ico-crown" viewBox="0 0 1254 1254">
     <path d="M624.894 260.417C645.828 257.982 667.734 268.659 679.973 285.539C690.086 299.448 694.107 316.872 691.111 333.807C687.704 353.693 677.127 365.346 661.281 376.6C673.782 396.288 687.99 415.993 701.013 435.443C730.251 479.109 761.027 522.397 789.934 566.206C812.325 553.141 836.902 540.534 859.704 527.946C892.226 509.992 925.165 491.062 958.267 474.315C944.267 450.548 943.318 424.868 959.606 401.833C968.866 388.614 983.031 379.649 998.942 376.939C1015.53 374.122 1032.56 378.093 1046.19 387.96C1059.57 397.842 1068.49 412.615 1071 429.052C1073.63 446.197 1069.29 463.68 1058.94 477.606C1045.67 495.425 1030.17 499.68 1009.4 502.611C1005.59 520.184 999.707 539.88 995.001 557.496L969.372 653.705C961.533 683.375 953.507 712.995 945.293 742.563C940.914 758.451 936.832 774.217 931.79 789.908C921.586 821.657 897.21 817.568 870.21 817.509L817.425 817.42L632.817 817.461L444.299 817.455L390.04 817.554C331.394 817.982 330.478 819.096 314.664 761.026L300.131 707.524C281.838 639.336 263.931 571.046 246.411 502.656C235.806 502.126 226.761 500.488 217.139 495.785C202.345 488.459 191.075 475.546 185.817 459.897C174.994 427.828 191.926 390.724 224.518 380.037C240.68 374.814 258.254 376.223 273.377 383.955C288.179 391.596 299.308 404.842 304.284 420.74C310.835 441.617 306.125 456.213 296.438 474.581C333.233 494.785 370.144 514.776 407.17 534.553C425.239 544.339 448.194 558.019 466.397 566.529C470.925 558.611 477.52 549.64 482.821 542.033L509.069 504.268L597.284 376.371C582.351 365.906 572.042 350.309 569.224 332.179C566.505 315.567 570.586 298.56 580.548 284.992C591.84 269.822 606.673 263.181 624.894 260.417Z"/>
@@ -1016,149 +21,212 @@
 </svg>
 
 <!-- NAV -->
-<!-- INTRO SPLASH -->
-<div id="intro-splash">
-  <div class="splash-lock">
-    <div class="splash-glow"></div>
-    <div class="splash-ripple"></div>
-    <svg class="lock-svg" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!--
-        Mathematically precise recreation of the Lockify logo (88x88 viewBox).
-        All coordinates derived from the actual SVG path data:
-
-        SHACKLE:  midline arc center=(44.46, 28.75) r=17.73, stroke=6.2
-                  arms at x=27.0 and x=62.0, meet body at y=31.6
-                  large-arc=1, sweep=0 (upper arc, counterclockwise L→R)
-
-        BODY:     outer L=13.0 R=76.0 T=31.6 B=79.1
-                  border stroke=6.1, midline rect: L=16.1 R=72.9 T=34.6 B=76.1
-                  corner rx=5 (midline)
-
-        KEYHOLE:  circle center=(44.5, 51.5) r=7.6
-                  stem: x 41.0–47.9, y 57.0–66.8
-
-        Animation: shackle pivot at left arm base (27.0, 31.6)
-                   rotates from -38° (open) → 0° (locked)
-      -->
-
-      <!-- ① SHACKLE — behind body, rotates to lock -->
-      <g class="lock-shackle">
-        <!--
-          Path: arms extend slightly into body (to y=36.5) for seamless join,
-          then arc UP and OVER the top.
-          large-arc=1 (upper arc is ~342°), sweep=1 (clockwise in SVG screen-space
-          = going from left arm UP over the top to right arm)
-        -->
-        <path d="M27.0 36.5 L27.0 31.6 A17.73 17.73 0 1 1 62.0 31.6 L62.0 36.5"
-              stroke="#49B195" stroke-width="6.2"
-              stroke-linecap="butt" stroke-linejoin="round" fill="none"/>
-      </g>
-
-      <!-- ② BODY — drawn on top, bg fill masks shackle arm stubs -->
-      <g class="lock-body">
-        <!-- BG fill masks shackle arm stubs. rx/ry larger than outer teal stroke corner.   -->
-        <!-- Outer teal corner from logo bezier: rx=11.95 ry=13.85 (19% W, 29% H of body) -->
-        <rect x="13.0" y="31.6" width="63.0" height="47.5" rx="18.5" ry="21.5" fill="#0c0e0d"/>
-        <!-- Teal border midline: rx=15 ry=18 → outer rx=18.05, ry=21.05 -->
-        <!-- <rect x="16.1" y="34.6" width="56.8" height="41.5" rx="15" ry="18"
-              stroke="#49B195" stroke-width="6.1" fill="none"/> -->
-              <path d="M24.1 34.6 H64.9 A8 8 0 0 1 72.9 42.6 V64.1 A12 12 0 0 1 60.9 76.1 H28.1 A12 12 0 0 1 16.1 64.1 V42.6 A8 8 0 0 1 24.1 34.6 Z"
-                stroke="#49B195" stroke-width="6.1" fill="none"/>
-        <!-- ③ KEYHOLE — solid teal circle -->
-        <circle cx="44.5" cy="51.5" r="7.6" fill="#49B195"/>
-        <!-- Keyhole stem -->
-        <rect x="41.0" y="57.0" width="6.9" height="9.8" rx="3.0" fill="#49B195"/>
-      </g>
-    </svg>
-  </div>
-  <div class="splash-wordmark">Lockify</div>
-  <div class="splash-tag">Local Encrypted Vault</div>
-</div>
-
-<nav>
-  <a href="#" class="nav-logo">
+<nav class="site-nav" id="site-nav">
+  <a href="#" class="nav-logo nav-item" style="--i:0">
     <img src="Lockify_text.svg" alt="Lockify" />
   </a>
   <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#stealth">Stealth Mode</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="nav-cta">Download</a></li>
+    <li class="nav-item" style="--i:1"><a href="#features">Features</a></li>
+    <li class="nav-item" style="--i:2"><a href="#stealth">Stealth Mode</a></li>
+    <li class="nav-item" style="--i:3"><a href="#faq">FAQ</a></li>
+    <li class="nav-item nav-item-cta" style="--i:4"><a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="nav-cta">Download</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-dots"></div>
-
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    encrypted vault · android
-  </div>
-
-  <h1>Your files.<br><span class="accent">Locked tight.</span><br>No exceptions.</h1>
-
-  <p class="hero-sub">Lockify is a private, encrypted file vault for Android. Your files stay on your device — encrypted, organized, and always accessible. No fuss.</p>
-
-  <div class="hero-ctas">
-    <a href="https://play.google.com/store/apps/details?id=com.leo.lockify"  class="btn-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
-      Download on Play Store
-    </a>
-    <a href="#features" class="btn-ghost">
-      See features
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+<!-- Orbit -->
+<div class="orbit-container" id="orbit-container">
+  <div class="orbit-scene">
+    <div class="orbit-lock">
+      <div class="orbit-lock-glow"></div>
+      <div class="orbit-lock-ripple"></div>
+      <svg class="lock-svg" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="lock-shackle">
+          <path d="M27.0 36.5 L27.0 31.6 A17.73 17.73 0 1 1 62.0 31.6 L62.0 36.5"
+                stroke="#49B195" stroke-width="6.2"
+                stroke-linecap="butt" stroke-linejoin="round" fill="none"/>
+        </g>
+        <g class="lock-body">
+          <rect x="13.0" y="31.6" width="63.0" height="47.5" rx="18.5" ry="21.5" fill="#0c0e0d"/>
+          <path d="M24.1 34.6 H64.9 A8 8 0 0 1 72.9 42.6 V64.1 A12 12 0 0 1 60.9 76.1 H28.1 A12 12 0 0 1 16.1 64.1 V42.6 A8 8 0 0 1 24.1 34.6 Z"
+                stroke="#49B195" stroke-width="6.1" fill="none"/>
+            <circle cx="44.5" cy="51.5" r="7.6" fill="#49B195" stroke="#49B195" stroke-width="1.8" paint-order="stroke fill"/>
+            <rect x="41.0" y="57.0" width="6.9" height="9.8" rx="3.0" fill="#49B195" stroke="#49B195" stroke-width="1.8" paint-order="stroke fill"/>
+        </g>
       </svg>
-    </a>
+    </div>
+
+    <div class="orbit-wordmark">Lockify</div>
+    <div class="orbit-tag">Local Encrypted Vault</div>
+
+    <div class="orbit-ring">
+      <div class="orbit-card" data-hover-title="Encrypted Vault" data-hover-desc="Files are encrypted before being written to storage — invisible to other apps." data-expand-desc="Files are encrypted before being written to storage — invisible to other apps and system file browsers, even with physical device access.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+        <span class="orbit-card-label">Encrypted</span>
+      </div>
+      <div class="orbit-card" data-hover-title="Biometric Auth" data-hover-desc="Unlock with fingerprint or face unlock — Lockify only receives pass or fail." data-expand-desc="Unlock with fingerprint or face unlock. Android handles all biometrics — Lockify only receives a pass or fail result.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <span class="orbit-card-label">Biometric</span>
+      </div>
+      <div class="orbit-card" data-hover-title="In-App File Viewer" data-hover-desc="View images, videos, and PDFs directly inside the app." data-expand-desc="View images, videos, and PDFs directly inside the app. Temporary decrypted copies are cleaned up automatically after viewing.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        <span class="orbit-card-label">File Viewer</span>
+      </div>
+      <div class="orbit-card" data-hover-title="Folders & Organization" data-hover-desc="Create folders to keep files organized your way inside the vault." data-expand-desc="Create folders to keep files organized your way. Easy to navigate, rename, and rearrange — all within the secure vault.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
+        <span class="orbit-card-label">Folders</span>
+      </div>
+      <div class="orbit-card" data-hover-title="Recycle Bin" data-hover-desc="Deleted files land in the bin first — a safety net for accidents." data-expand-desc="Deleted files land in the bin first, auto-purged after 30 days. A simple safety net for accidental deletions.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg></span>
+        <span class="orbit-card-label">Recycle Bin</span>
+      </div>
+      <div class="orbit-card premium" data-hover-title="Disguise Mode" data-hover-desc="Swap the app icon for a preset disguise with a custom tap message." data-expand-desc="Disguise Mode swaps the app icon and name for one of three presets — Settings, Package Installer, or Device Care. Tapping the disguised icon shows a short message you write yourself, instead of opening anything. The vault only opens through a private deep link.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="12" height="12" rx="3"/><rect x="9" y="9" width="12" height="12" rx="3"/></svg></span>
+        <span class="orbit-card-label">Disguise Mode</span>
+      </div>
+      <div class="orbit-card premium" data-hover-title="Decoy Vault" data-hover-desc="A separate, PIN-protected space completely isolated from your main vault." data-expand-desc="A separate, PIN-protected space with its own files — completely isolated from your main vault, and from backups.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></span>
+        <span class="orbit-card-label">Decoy Vault</span>
+      </div>
+      <div class="orbit-card premium" data-hover-title="Cloud Sync" data-hover-desc="Back up your vault to Google Drive, encrypted before it leaves." data-expand-desc="Back up your vault to your own Google Drive, encrypted on your device before it ever leaves. Only you hold the key.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg></span>
+        <span class="orbit-card-label">Cloud Sync</span>
+      </div>
+      <div class="orbit-card premium" data-hover-title="Motion Lock" data-hover-desc="Detects a flip, shake, or snatch and locks the vault instantly." data-expand-desc="Your device's motion sensors detect a flip, shake, or snatch, and lock the vault instantly. Fully on-device, nothing stored.">
+        <span class="orbit-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/><line x1="2" y1="7" x2="4" y2="7"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="7" x2="22" y2="7"/><line x1="20" y1="12" x2="22" y2="12"/></svg></span>
+        <span class="orbit-card-label">Motion Lock</span>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <!-- SOCIAL STRIP -->
-  <div class="hero-social">
-    <span class="hero-social-label">Follow</span>
+<!-- Hero -->
+<div class="hero-container" id="hero-container">
+  <div class="hero-scene">
+    <div class="hero-backdrop"></div>
+    <div class="hero-glow"></div>
 
-    <!-- X / Twitter -->
-    <a href="https://x.com/getlockify" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on X">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.257 5.622 5.907-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-    </a>
-
-    <!-- Reddit -->
-    <a href="https://reddit.com/u/lockifyapp" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on Reddit">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
-    </a>
-
-    <!-- YouTube -->
-    <a href="https://youtube.com/@lockifyapp" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on YouTube">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-    </a>
-  </div>
-
-  <!-- PHONE SHOWCASE — cyclic carousel -->
-  <div class="phones-stage">
-    <div class="phones-row" id="phoneCarousel">
-      <div class="phone-wrap side" data-pos="left" onclick="cycleCarousel('left')">
-        <div class="phone">
-          <img src="7.png" alt="Calculator stealth mode" loading="lazy" />
-        </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        encrypted vault · android
+      </div>
+      <h1 class="hero-headline">Your files.<br><span class="hero-accent">Locked tight.</span><br>No exceptions.</h1>
+      <p class="hero-sub">Lockify is a private, encrypted file vault for Android. Your files stay on your device — encrypted, organized, and always accessible. No fuss.</p>
+      <div class="hero-ctas">
+        <a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="hero-btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
+          Download on Play Store
+        </a>
+        <a href="#features" class="hero-btn-ghost">
+          See features
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
 
-      <div class="phone-wrap center" data-pos="center">
-        <div class="phone">
-          <img src="1.png" alt="Lockify vault" loading="lazy" />
-        </div>
-      </div>
-
-      <div class="phone-wrap side" data-pos="right" onclick="cycleCarousel('right')">
-        <div class="phone">
-          <img src="3.png" alt="File management" loading="lazy" />
-        </div>
+      <div class="hero-social">
+        <span class="hero-social-label">Follow</span>
+        <a href="https://x.com/getlockify" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on X">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.257 5.622 5.907-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://reddit.com/u/lockifyapp" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on Reddit">
+          <svg viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+        </a>
+        <a href="https://youtube.com/@lockifyapp" class="hero-social-link" target="_blank" rel="noopener" aria-label="Lockify on YouTube">
+          <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- STATS -->
+<!-- Screenshots -->
+<div class="screenshots-container" id="screenshots-container">
+  <div class="screenshots-scene">
+    <div class="screenshots-header">
+      <h2>See it in action</h2>
+      <p>Tap any screen to learn more</p>
+    </div>
+
+    <div class="screenshots-viewport">
+      <div class="screenshots-track">
+
+        <div class="screenshot-card" data-title="Your Vault" data-desc="A clean, organized file manager built for privacy. Browse your encrypted files by type — photos, videos, documents, and notes — all in one secure place.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-vault.png" alt="Lockify Vault" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">Your Vault</div>
+        </div>
+
+        <div class="screenshot-card" data-title="In-App File Viewer" data-desc="View images, videos, and PDFs directly inside the app. Temporary decrypted copies are cleaned up automatically after viewing.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-gallery.png" alt="In-App File Viewer" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">File Viewer</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Folders & Organization" data-desc="Create folders to keep files organized your way. Easy to navigate, rename, and rearrange — all within the secure vault.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-folders.png" alt="Folders & Organization" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">Folders</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Calculator Stealth Mode" data-desc="Lockify completely disguises itself as a working calculator. Enter your secret PIN sequence on the calculator to unlock. To everyone else — it's just a calculator app.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-calculator.png" alt="Calculator Stealth Mode" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">Calculator Stealth</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Biometric Auth" data-desc="Unlock with fingerprint or face unlock. Android handles all biometrics — Lockify only receives a pass or fail result.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-biometric.png" alt="Biometric Auth" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">Biometric Auth</div>
+        </div>
+
+        <div class="screenshot-card" data-title="Cloud Sync" data-desc="Back up your vault to your own Google Drive, encrypted on your device before it ever leaves. Only you hold the key.">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <img src="design/assets/screen-cloudsync.png" alt="Cloud Sync" loading="lazy" />
+            </div>
+          </div>
+          <div class="card-label">Cloud Sync</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="screenshots-dots">
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+      <span class="screenshots-dot"></span>
+    </div>
+
+    <div class="screenshot-detail">
+      <div class="detail-title"></div>
+      <div class="detail-desc"></div>
+      <button class="detail-close">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Stats -->
 <div class="stats-wrap reveal">
   <div class="stats-inner">
     <div class="stat">
@@ -1170,7 +238,7 @@
       <div class="stat-lbl">Encryption</div>
     </div>
     <div class="stat">
-      <div class="stat-val">∞</div>
+      <div class="stat-val">&infin;</div>
       <div class="stat-lbl">Files stored</div>
     </div>
     <div class="stat">
@@ -1180,7 +248,7 @@
   </div>
 </div>
 
-<!-- FEATURES -->
+<!-- Features -->
 <section class="features" id="features">
   <div class="feat-hd reveal">
     <span class="mono-tag">Everything you need</span>
@@ -1237,12 +305,12 @@
   </div>
 </section>
 
-<!-- STEALTH -->
+<!-- Stealth -->
 <section class="stealth" id="stealth">
   <div class="stealth-card reveal">
     <div class="stealth-vis">
-      <div class="phone">
-        <img src="7.png" alt="Calculator stealth mode disguise" />
+      <div class="stealth-phone">
+        <img src="design/assets/screen-calculator.png" alt="Calculator stealth mode disguise" />
       </div>
     </div>
     <div class="stealth-txt">
@@ -1272,7 +340,6 @@
   </div>
 </section>
 
-
 <!-- FAQ -->
 <section class="faq" id="faq">
   <div class="faq-hd reveal">
@@ -1282,29 +349,29 @@
   </div>
   <div class="reveal">
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">What happens if I forget my PIN?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      <div class="faq-body"><p>If you forget your calculator stealth PIN, you can verify your identity using your device’s biometric authentication (fingerprint or face unlock).<br>
-        After successful biometric verification, you’ll be given the option to reset your calculator PIN and set a new one.<br>
+      <button class="faq-btn">What happens if I forget my PIN?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-body"><p>If you forget your calculator stealth PIN, you can verify your identity using your device's biometric authentication (fingerprint or face unlock).<br>
+        After successful biometric verification, you'll be given the option to reset your calculator PIN and set a new one.<br>
         To protect your vault, repeated incorrect attempts may temporarily restrict access before biometric confirmation is required.</p></div>
     </div>
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">Are my files truly encrypted?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button class="faq-btn">Are my files truly encrypted?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <div class="faq-body"><p>Yes. Files are encrypted before being written to storage. Even with physical access to device storage, vault files appear as meaningless encrypted data without proper authentication.</p></div>
     </div>
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">Can I export files out of Lockify?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button class="faq-btn">Can I export files out of Lockify?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <div class="faq-body"><p>Yes. Export any file or open it with another app directly from the vault. Lockify creates a temporary decrypted copy and cleans it up afterwards. Once opened in another app, that app controls the file.</p></div>
     </div>
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">Does Lockify work without internet?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button class="faq-btn">Does Lockify work without internet?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <div class="faq-body"><p>Yes — all core vault functionality works without internet. No network connection is needed to encrypt, store, or view your files. The only optional network interaction is Google Play's in-app review prompt, handled entirely by Google Play.</p></div>
     </div>
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">How does Calculator Stealth Mode work?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button class="faq-btn">How does Calculator Stealth Mode work?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <div class="faq-body"><p>When enabled, Lockify replaces its icon with a calculator icon. Opening the app shows a real, working calculator. Entering your secret PIN sequence triggers biometric authentication and opens your vault. To anyone else, it's just a calculator.</p></div>
     </div>
     <div class="faq-item">
-      <button class="faq-btn" onclick="toggleFaq(this)">What file types can I store?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button class="faq-btn">What file types can I store?<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <div class="faq-body"><p>Any file you can import from your device — images, videos, PDFs, documents, and more. In-app viewing is supported for images, videos, and PDFs. Other types can be exported and opened with compatible apps.</p></div>
     </div>
   </div>
@@ -1315,14 +382,14 @@
   <span class="mono-tag">Ready?</span>
   <h2 class="sh">Your vault awaits.</h2>
   <p>Free to download. No account required to get started.</p>
-  <a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="btn-primary" style="margin: 0 auto; display: inline-flex;">
+  <a href="https://play.google.com/store/apps/details?id=com.leo.lockify" class="btn-primary" style="margin: 0 auto;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.37.21.8.22 1.17.02l13.12-7.56-2.9-2.9-11.39 10.44zM20.07 10.3L17.35 8.74l-3.24 3.24 3.24 3.24 2.74-1.58c.78-.45.78-1.89-.02-2.34zM1.01.76C.99.84.98.93.98 1.02v21.96c0 .09.01.18.03.26l12.14-11.11L1.01.76zm15.27 8.28L3.35.47C2.98.27 2.57.29 2.2.5l11.39 10.43 2.69-2.69z"/></svg>
     Download on Play Store
   </a>
 </section>
 
-<!-- FOOTER -->
-<footer>
+<!-- Footer -->
+<footer class="site-footer">
   <a href="#"><img src="Lockify_text.svg" alt="Lockify" /></a>
   <ul class="ft-links">
     <li><a href="#features">Features</a></li>
@@ -1331,96 +398,20 @@
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <div class="ft-social">
-    <!-- X / Twitter -->
     <a href="https://x.com/getlockify" class="ft-social-link" target="_blank" rel="noopener" aria-label="Lockify on X">
       <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.257 5.622 5.907-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     </a>
-    <!-- Reddit -->
     <a href="https://reddit.com/u/lockifyapp" class="ft-social-link" target="_blank" rel="noopener" aria-label="Lockify on Reddit">
       <svg viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
     </a>
-    <!-- YouTube -->
     <a href="https://youtube.com/@lockifyapp" class="ft-social-link" target="_blank" rel="noopener" aria-label="Lockify on YouTube">
       <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
     </a>
   </div>
-  <span class="ft-copy">© 2026 Lockify. Built for privacy.</span>
+  <span class="ft-copy">&copy; 2026 Lockify. Built for privacy.</span>
 </footer>
 
-<script>
-  // ── INTRO SPLASH ──
-  (function() {
+<script src="design/dist/app.min.js"></script>
 
-    const shouldSkip = sessionStorage.getItem('skipSplash') === 'true';
-    const splash = document.getElementById('intro-splash');
-
-    if (shouldSkip) {
-      splash.style.display = 'none';
-      sessionStorage.removeItem('skipSplash');
-      return;
-    }
-
-    document.body.classList.add('splash-active');
-
-    setTimeout(() => {
-      splash.classList.add('fade-out');
-      setTimeout(() => {
-        splash.style.display = 'none';
-        document.body.classList.remove('splash-active');
-      }, 850);
-    }, 1700);
-  })();
-
-  // Scroll reveal
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  // FAQ accordion
-  function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  }
-
-  // Phone carousel — cyclic rotation
-  // phones array order: [left, center, right]
-  // clicking left: left→center, center→right, right→left
-  // clicking right: right→center, center→left, left→right
-  function cycleCarousel(direction) {
-    const carousel = document.getElementById('phoneCarousel');
-    const phones = Array.from(carousel.querySelectorAll('.phone-wrap'));
-
-    // Find current positions
-    const leftEl   = phones.find(p => p.dataset.pos === 'left');
-    const centerEl = phones.find(p => p.dataset.pos === 'center');
-    const rightEl  = phones.find(p => p.dataset.pos === 'right');
-
-    if (direction === 'left') {
-      // left → center, center → right, right → left
-      leftEl.dataset.pos   = 'center';
-      centerEl.dataset.pos = 'right';
-      rightEl.dataset.pos  = 'left';
-    } else {
-      // right → center, center → left, left → right
-      rightEl.dataset.pos  = 'center';
-      centerEl.dataset.pos = 'left';
-      leftEl.dataset.pos   = 'right';
-    }
-
-    // Apply classes based on new positions
-    phones.forEach(p => {
-      const pos = p.dataset.pos;
-      p.className = 'phone-wrap ' + (pos === 'center' ? 'center' : 'side');
-      p.onclick = pos !== 'center' ? () => cycleCarousel(pos) : null;
-      p.style.cursor = pos !== 'center' ? 'pointer' : 'default';
-    });
-  }
-
-  // Initial cursor styling
-  document.querySelectorAll('.phone-wrap.side').forEach(p => p.style.cursor = 'pointer');
-</script>
 </body>
 </html>
