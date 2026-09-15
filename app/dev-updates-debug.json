@@ -1,0 +1,64 @@
+{
+  "contentVersion": 2,
+  "buildType": "debug",
+  "updatesUrl": "https://getlockifyapp.com/updates",
+  "updates": [
+    {
+      "id": "feature-poll",
+      "date": "Sep 2026",
+      "badge": "Poll",
+      "icon": "feature",
+      "title": "Help Shape Lockify",
+      "body": "Vote for the next privacy feature - App Hiding or Calendar Disguise. You decide what I build next.",
+      "link": "https://forms.gle/d9QkpQ1AMxGDFDsQ8"
+    },
+    {
+      "id": "notes-crash-fix",
+      "date": "Sep 2026",
+      "badge": "Notice",
+      "icon": "announcement",
+      "title": "Notes Crash - Fix Coming Soon",
+      "body": "A crash affecting some users on the Notes screen has been identified. A fix is being prepared and will be published shortly. Thank you for your patience."
+    },
+    {
+      "id": "encrypted-notes",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Encrypted Notes",
+      "body": "Write, format, and organize private notes - encrypted at rest inside your vault. Rich text with bold, italic, colors, and highlights. Premium unlocks unlimited notes with the full toolbar."
+    },
+    {
+      "id": "slideshow-viewer",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Slideshow Viewer",
+      "body": "Turn any folder of images into a hands-free slideshow. Auto-advance, swipe controls, full-screen. Premium adds shuffle, custom intervals, and transitions."
+    },
+    {
+      "id": "about-the-dev",
+      "date": "Aug 2026",
+      "badge": "Announcement",
+      "icon": "announcement",
+      "title": "About the Dev",
+      "body": "A new section to stay in the loop - see what's shipping, what's next, and support development directly with optional one-time contributions."
+    },
+    {
+      "id": "stealth-pin-reset",
+      "date": "Aug 2026",
+      "badge": "Feature",
+      "icon": "feature",
+      "title": "Stealth PIN Recovery",
+      "body": "Forgot your Calculator Stealth PIN? Tap AC seven times to trigger biometric verification and reset it. No settings menu, no obvious flow - just a quiet escape hatch."
+    },
+    {
+      "id": "german-vietnamese",
+      "date": "Aug 2026",
+      "badge": "Localization",
+      "icon": "localization",
+      "title": "German & Vietnamese",
+      "body": "Lockify now speaks German and Vietnamese. The entire app - menus, settings, prompts, and vault UI - is fully translated. More languages on the way."
+    }
+  ]
+}
