@@ -1,5 +1,5 @@
 {
-  "contentVersion": 3,
+  "contentVersion": 4,
   "buildType": "debug",
   "updatesUrl": "https://getlockifyapp.com/updates",
   "updates": [
@@ -10,7 +10,29 @@
       "icon": "feature",
       "title": "Help Shape Lockify",
       "body": "Vote for the next privacy feature - App Hiding or Calendar Disguise. You decide what I build next.",
-      "link": "https://forms.gle/d9QkpQ1AMxGDFDsQ8"
+      "link": "https://forms.gle/d9QkpQ1AMxGDFDsQ8",
+      "i18n": {
+        "es": {
+          "title": "Ayuda a dar forma a Lockify",
+          "body": "Vota por la próxima función de privacidad: Ocultar apps o Disfraz de calendario. Tú decides qué construyo a continuación."
+        },
+        "de": {
+          "title": "Gestalte Lockify mit",
+          "body": "Stimme für das nächste Datenschutz-Feature ab – App-Verstecken oder Kalender-Tarnung. Du entscheidest, was als Nächstes kommt."
+        },
+        "tr": {
+          "title": "Lockify'ı Şekillendirin",
+          "body": "Bir sonraki gizlilik özelliği için oy verin - Uygulama Gizleme veya Takvim Kılığı. Sırada ne geliyor, siz karar verin."
+        },
+        "vi": {
+          "title": "Góp ý cho Lockify",
+          "body": "Bình chọn tính năng bảo mật tiếp theo - Ẩn ứng dụng hoặc Ngụy trang lịch. Bạn quyết định tôi xây dựng gì tiếp theo."
+        },
+        "pt-BR": {
+          "title": "Ajude a moldar o Lockify",
+          "body": "Vote na próxima função de privacidade - Ocultar apps ou Disfarce de calendário. Você decide o que eu construo a seguir."
+        }
+      }
     },
     {
       "id": "notes-crash-fix",
@@ -18,7 +40,29 @@
       "badge": "Notice",
       "icon": "announcement",
       "title": "Notes Crash - Fix Coming Soon",
-      "body": "A crash affecting some users on the Notes screen has been identified. A fix is being prepared and will be published shortly. Thank you for your patience."
+      "body": "A crash affecting some users on the Notes screen has been identified. A fix is being prepared and will be published shortly. Thank you for your patience.",
+      "i18n": {
+        "es": {
+          "title": "Error en Notas - Corrección en camino",
+          "body": "Se ha identificado un error que afecta a algunos usuarios en la pantalla de Notas. Se está preparando una corrección que se publicará pronto. Gracias por su paciencia."
+        },
+        "de": {
+          "title": "Notizen-Absturz - Fix folgt in Kürze",
+          "body": "Ein Absturz, der einige Nutzer auf dem Notizen-Bildschirm betrifft, wurde erkannt. Ein Fix wird vorbereitet und in Kürze veröffentlicht. Vielen Dank für Ihre Geduld."
+        },
+        "tr": {
+          "title": "Notlar Çökmesi - Düzeltme Yakında",
+          "body": "Notlar ekranında bazı kullanıcıları etkileyen bir çökme tespit edildi. Düzeltme hazırlanıyor ve yakında yayınlanacak. Sabrınız için teşekkürler."
+        },
+        "vi": {
+          "title": "Lỗi Ghi chú - Bản sửa sắp ra mắt",
+          "body": "Một lỗi ảnh hưởng đến một số người dùng trên màn hình Ghi chú đã được xác định. Bản sửa lỗi đang được chuẩn bị và sẽ được phát hành sớm. Cảm ơn sự kiên nhẫn của bạn."
+        },
+        "pt-BR": {
+          "title": "Erro nas Notas - Correção em breve",
+          "body": "Um erro que afeta alguns usuários na tela de Notas foi identificado. Uma correção está sendo preparada e será publicada em breve. Obrigado pela paciência."
+        }
+      }
     },
     {
       "id": "encrypted-notes",
@@ -26,7 +70,29 @@
       "badge": "Feature",
       "icon": "feature",
       "title": "Encrypted Notes",
-      "body": "Write, format, and organize private notes - encrypted at rest inside your vault. Rich text with bold, italic, colors, and highlights. Premium unlocks unlimited notes with the full toolbar."
+      "body": "Write, format, and organize private notes - encrypted at rest inside your vault. Rich text with bold, italic, colors, and highlights. Premium unlocks unlimited notes with the full toolbar.",
+      "i18n": {
+        "es": {
+          "title": "Notas Cifradas",
+          "body": "Escribe, formatea y organiza notas privadas, cifradas en reposo dentro de tu bóveda. Texto enriquecido con negrita, cursiva, colores y resaltados. Premium desbloquea notas ilimitadas con la barra de herramientas completa."
+        },
+        "de": {
+          "title": "Verschlüsselte Notizen",
+          "body": "Schreibe, formatiere und organisiere private Notizen – verschlüsselt in deinem Tresor gespeichert. Rich-Text mit Fett, Kursiv, Farben und Hervorhebungen. Premium schaltet unbegrenzte Notizen mit der vollständigen Toolbar frei."
+        },
+        "tr": {
+          "title": "Şifreli Notlar",
+          "body": "Özel notlarınızı yazın, biçimlendirin ve düzenleyin - kasanızda şifreli olarak saklanır. Kalın, italik, renkler ve vurgularla zengin metin. Premium, tam araç çubuğuyla sınırsız not açar."
+        },
+        "vi": {
+          "title": "Ghi chú mã hóa",
+          "body": "Viết, định dạng và sắp xếp ghi chú riêng tư - được mã hóa trong kho lưu trữ của bạn. Văn bản phong phú với in đậm, in nghiêng, màu sắc và tô sáng. Premium mở khóa ghi chú không giới hạn với thanh công cụ đầy đủ."
+        },
+        "pt-BR": {
+          "title": "Notas Criptografadas",
+          "body": "Escreva, formate e organize notas privadas - criptografadas no seu cofre. Texto rico com negrito, itálico, cores e destaques. Premium libera notas ilimitadas com a barra de ferramentas completa."
+        }
+      }
     },
     {
       "id": "slideshow-viewer",
@@ -34,7 +100,29 @@
       "badge": "Feature",
       "icon": "feature",
       "title": "Slideshow Viewer",
-      "body": "Turn any folder of images into a hands-free slideshow. Auto-advance, swipe controls, full-screen. Premium adds shuffle, custom intervals, and transitions."
+      "body": "Turn any folder of images into a hands-free slideshow. Auto-advance, swipe controls, full-screen. Premium adds shuffle, custom intervals, and transitions.",
+      "i18n": {
+        "es": {
+          "title": "Visor de Presentación",
+          "body": "Convierte cualquier carpeta de imágenes en una presentación automática. Avance automático, controles de deslizamiento, pantalla completa. Premium añade reproducción aleatoria, intervalos personalizados y transiciones."
+        },
+        "de": {
+          "title": "Diashow-Ansicht",
+          "body": "Verwandle jeden Bilderordner in eine automatische Diashow. Automatischer Wechsel, Wischsteuerung, Vollbild. Premium bietet Zufallswiedergabe, eigene Intervalle und Übergänge."
+        },
+        "tr": {
+          "title": "Slayt Gösterisi",
+          "body": "Herhangi bir resim klasörünü otomatik slayt gösterisine dönüştürün. Otomatik ilerleme, kaydırma kontrolleri, tam ekran. Premium karıştırma, özel aralıklar ve geçişler ekler."
+        },
+        "vi": {
+          "title": "Trình chiếu ảnh",
+          "body": "Biến bất kỳ thư mục ảnh nào thành trình chiếu tự động. Tự động chuyển, vuốt điều khiển, toàn màn hình. Premium thêm phát ngẫu nhiên, khoảng cách tùy chỉnh và hiệu ứng chuyển cảnh."
+        },
+        "pt-BR": {
+          "title": "Visualizador de Slides",
+          "body": "Transforme qualquer pasta de imagens em uma apresentação automática. Avanço automático, controles de deslizar, tela cheia. Premium adiciona reprodução aleatória, intervalos personalizados e transições."
+        }
+      }
     },
     {
       "id": "about-the-dev",
@@ -42,7 +130,29 @@
       "badge": "Announcement",
       "icon": "announcement",
       "title": "About the Dev",
-      "body": "A new section to stay in the loop - see what's shipping, what's next, and support development directly with optional one-time contributions."
+      "body": "A new section to stay in the loop - see what's shipping, what's next, and support development directly with optional one-time contributions.",
+      "i18n": {
+        "es": {
+          "title": "Sobre el Desarrollador",
+          "body": "Una nueva sección para mantenerte informado: mira qué se está enviando, qué viene después, y apoya el desarrollo directamente con contribuciones opcionales únicas."
+        },
+        "de": {
+          "title": "Über den Entwickler",
+          "body": "Ein neuer Bereich, um auf dem Laufenden zu bleiben – sieh, was kommt, was als Nächstes geplant ist, und unterstütze die Entwicklung direkt mit optionalen Einmalspenden."
+        },
+        "tr": {
+          "title": "Geliştirici Hakkında",
+          "body": "Güncel kalmak için yeni bir bölüm - nelerin yayınlandığını, sırada ne olduğunu görün ve isteğe bağlı tek seferlik katkılarla geliştirmeyi doğrudan destekleyin."
+        },
+        "vi": {
+          "title": "Về nhà phát triển",
+          "body": "Một mục mới để cập nhật thông tin - xem những gì đang phát hành, sắp ra mắt, và hỗ trợ phát triển trực tiếp với các đóng góp tùy chọn một lần."
+        },
+        "pt-BR": {
+          "title": "Sobre o Desenvolvedor",
+          "body": "Uma nova seção para ficar por dentro - veja o que está sendo lançado, o que vem a seguir, e apoie o desenvolvimento diretamente com contribuições opcionais únicas."
+        }
+      }
     },
     {
       "id": "stealth-pin-reset",
@@ -50,7 +160,29 @@
       "badge": "Feature",
       "icon": "feature",
       "title": "Stealth PIN Recovery",
-      "body": "Forgot your Calculator Stealth PIN? Tap AC seven times to trigger biometric verification and reset it. No settings menu, no obvious flow - just a quiet escape hatch."
+      "body": "Forgot your Calculator Stealth PIN? Tap AC seven times to trigger biometric verification and reset it. No settings menu, no obvious flow - just a quiet escape hatch.",
+      "i18n": {
+        "es": {
+          "title": "Recuperación de PIN Oculto",
+          "body": "¿Olvidaste tu PIN oculto de la Calculadora? Toca AC siete veces para activar la verificación biométrica y restablecerlo. Sin menú de ajustes, sin flujo obvio, solo una salida discreta."
+        },
+        "de": {
+          "title": "Stealth-PIN-Wiederherstellung",
+          "body": "Stealth-PIN des Taschenrechners vergessen? Tippe sieben Mal auf AC, um die biometrische Verifizierung auszulösen und die PIN zurückzusetzen. Kein Einstellungsmenü, kein offensichtlicher Ablauf – nur ein unauffälliger Notausgang."
+        },
+        "tr": {
+          "title": "Gizli PIN Kurtarma",
+          "body": "Hesap Makinesi Gizli PIN'inizi mi unuttunuz? Biyometrik doğrulamayı tetiklemek ve sıfırlamak için AC'ye yedi kez dokunun. Ayar menüsü yok, belirgin bir akış yok - sadece sessiz bir çıkış yolu."
+        },
+        "vi": {
+          "title": "Khôi phục PIN ẩn",
+          "body": "Quên PIN ẩn của Máy tính? Nhấn AC bảy lần để kích hoạt xác minh sinh trắc học và đặt lại. Không có menu cài đặt, không có quy trình rõ ràng - chỉ là một lối thoát kín đáo."
+        },
+        "pt-BR": {
+          "title": "Recuperação do PIN Oculto",
+          "body": "Esqueceu seu PIN Oculto da Calculadora? Toque em AC sete vezes para acionar a verificação biométrica e redefini-lo. Sem menu de configurações, sem fluxo óbvio - apenas uma saída discreta."
+        }
+      }
     },
     {
       "id": "german-vietnamese",
@@ -58,7 +190,29 @@
       "badge": "Localization",
       "icon": "localization",
       "title": "German & Vietnamese",
-      "body": "Lockify now speaks German and Vietnamese. The entire app - menus, settings, prompts, and vault UI - is fully translated. More languages on the way."
+      "body": "Lockify now speaks German and Vietnamese. The entire app - menus, settings, prompts, and vault UI - is fully translated. More languages on the way.",
+      "i18n": {
+        "es": {
+          "title": "Alemán y Vietnamita",
+          "body": "Lockify ahora habla alemán y vietnamita. Toda la aplicación - menús, ajustes, indicaciones e interfaz de la bóveda - está completamente traducida. Más idiomas en camino."
+        },
+        "de": {
+          "title": "Deutsch & Vietnamesisch",
+          "body": "Lockify spricht jetzt Deutsch und Vietnamesisch. Die gesamte App – Menüs, Einstellungen, Hinweise und Tresor-Oberfläche – ist vollständig übersetzt. Weitere Sprachen folgen."
+        },
+        "tr": {
+          "title": "Almanca ve Vietnamca",
+          "body": "Lockify artık Almanca ve Vietnamca konuşuyor. Tüm uygulama - menüler, ayarlar, istemler ve kasa arayüzü - tamamen çevrildi. Daha fazla dil yolda."
+        },
+        "vi": {
+          "title": "Tiếng Đức & Tiếng Việt",
+          "body": "Lockify giờ đã hỗ trợ tiếng Đức và tiếng Việt. Toàn bộ ứng dụng - menu, cài đặt, thông báo và giao diện kho - đã được dịch hoàn chỉnh. Thêm ngôn ngữ đang được phát triển."
+        },
+        "pt-BR": {
+          "title": "Alemão e Vietnamita",
+          "body": "O Lockify agora fala alemão e vietnamita. Todo o aplicativo - menus, configurações, avisos e interface do cofre - está totalmente traduzido. Mais idiomas a caminho."
+        }
+      }
     }
   ]
 }
