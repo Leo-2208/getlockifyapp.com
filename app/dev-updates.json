@@ -1,7 +1,16 @@
 {
-  "contentVersion": 2,
+  "contentVersion": 3,
   "updatesUrl": "https://getlockifyapp.com/updates",
   "updates": [
+    {
+      "id": "feature-poll",
+      "date": "Sep 2026",
+      "badge": "Poll",
+      "icon": "feature",
+      "title": "Help Shape Lockify",
+      "body": "Vote for the next privacy feature - App Hiding or Calendar Disguise. You decide what I build next.",
+      "link": "https://forms.gle/d9QkpQ1AMxGDFDsQ8"
+    },
     {
       "id": "notes-crash-fix",
       "date": "Sep 2026",
