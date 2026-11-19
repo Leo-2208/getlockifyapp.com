@@ -49,6 +49,13 @@
     @media (prefers-reduced-motion: reduce){
       body.hero-play .hero-scene *{animation-duration:.01s!important;animation-delay:0s!important}
     }
+    /* Settled hero: once the entrance has had time to finish, swap the animations for plain
+       visible styles. Renderers that don't advance CSS animations (Googlebot's screenshot showed
+       an empty hero) still end up with a visible hero, since they do fast-forward timers. */
+    body.hero-done .hero-backdrop,body.hero-done .hero-glow{animation:none;opacity:1}
+    body.hero-done .hero-content{animation:none;transform:none}
+    body.hero-done .hero-badge,body.hero-done .hero-headline,body.hero-done .hero-sub,
+    body.hero-done .hero-ctas,body.hero-done .hero-social{animation:none;opacity:1;transform:none}
 
     /* ── Intro splash ── Open lock snaps shut, wordmark + tagline, then fades to the hero.
        Shackle pivots at its left base (27,31.6): -38deg = open, 0deg = locked. */
@@ -69,6 +76,15 @@
     @keyframes splashRise{to{opacity:1;transform:none}}
     body.splash-active{overflow:hidden}
   </style>
+  <!-- Without JavaScript the splash would never leave: hide it and show the hero + nav as-is. -->
+  <noscript><style>
+    #intro-splash{display:none}
+    .hero-backdrop,.hero-glow,.hero-badge,.hero-headline,.hero-sub,.hero-ctas,.hero-social{opacity:1!important}
+    .hero-content,.hero-badge,.hero-headline,.hero-sub,.hero-ctas,.hero-social{transform:none!important}
+    .site-nav{opacity:1!important;transform:none!important;pointer-events:auto!important}
+    .site-nav .nav-item{opacity:1!important;transform:none!important}
+    .reveal{opacity:1!important;transform:none!important}
+  </style></noscript>
 </head>
 <body>
 
@@ -103,13 +119,16 @@
   if (location.hash) skip = true;
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) skip = true;
 
+  var SETTLE_MS = 1300; // longest hero entrance (glow) is 1.2s
   function handOver(){
     body.classList.add('hero-play');
     var nav = document.getElementById('site-nav');
     if (nav) nav.classList.add('revealed');
+    setTimeout(function(){ body.classList.add('hero-done'); }, SETTLE_MS);
   }
   if (skip) {
     splash.classList.add('gone');
+    body.classList.add('hero-done');
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', handOver); else handOver();
     return;
   }
