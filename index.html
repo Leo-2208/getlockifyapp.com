@@ -33,8 +33,15 @@
        modules are no longer started by app.min.js). hero-reveal.css still starts the hero's parts
        at opacity 0, so they play a timed entrance once the splash hands over (body.hero-play);
        fill-mode "both" holds the final state. */
-    .hero-container{height:100vh;height:100svh;margin-top:0}
-    .hero-scene{position:relative}
+    .hero-container{height:100vh;height:100svh;max-height:1400px;margin-top:0}
+    .hero-scene{position:relative;height:100%}
+    /* Googlebot renders with a viewport stretched to the page length (thousands of px tall), which
+       made the one-screen hero huge and pushed the headline out of its screenshot. Real screens are
+       far shorter than this, so only such renderers get the top-aligned layout. */
+    @media (min-height:1400px){
+      .hero-scene{align-items:flex-start}
+      .hero-content{padding-top:150px}
+    }
     @keyframes heroFade{from{opacity:0}to{opacity:1}}
     @keyframes heroRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
     @keyframes heroShift{from{transform:translateY(24px)}to{transform:none}}
