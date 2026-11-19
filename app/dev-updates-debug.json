@@ -1,8 +1,38 @@
 {
-  "contentVersion": 4,
+  "contentVersion": 5,
   "buildType": "debug",
   "updatesUrl": "https://getlockifyapp.com/updates",
   "updates": [
+    {
+      "id": "calendar-disguise-live",
+      "date": "Nov 2026",
+      "badge": "You Asked",
+      "icon": "feature",
+      "title": "You Voted, I Delivered - Calendar Disguise",
+      "body": "Thank you for voting! Calendar Disguise is now live in Premium: Lockify can look and work like a real calendar app, and only your secret date opens the vault. App Hider is what I'm building next, so you can keep chosen apps off your home screen.",
+      "i18n": {
+        "es": {
+          "title": "Votaste y cumplí - Disfraz de calendario",
+          "body": "¡Gracias por votar! El Disfraz de calendario ya está disponible en Premium: Lockify puede verse y funcionar como una app de calendario real, y solo tu fecha secreta abre la bóveda. Lo siguiente que estoy construyendo es Ocultar apps, para que puedas quitar de tu pantalla de inicio las apps que elijas."
+        },
+        "de": {
+          "title": "Ihr habt abgestimmt, ich habe geliefert – Kalender-Tarnung",
+          "body": "Danke fürs Abstimmen! Die Kalender-Tarnung ist jetzt in Premium verfügbar: Lockify kann wie eine echte Kalender-App aussehen und funktionieren, und nur dein geheimes Datum öffnet den Tresor. Als Nächstes baue ich App-Verstecken, damit du ausgewählte Apps von deinem Startbildschirm fernhalten kannst."
+        },
+        "tr": {
+          "title": "Oy Verdiniz, Ben de Yaptım - Takvim Kılığı",
+          "body": "Oy verdiğiniz için teşekkürler! Takvim Kılığı artık Premium'da: Lockify gerçek bir takvim uygulaması gibi görünüp çalışabilir ve kasayı yalnızca gizli tarihiniz açar. Sırada Uygulama Gizleme var; böylece seçtiğiniz uygulamaları ana ekranınızdan uzak tutabileceksiniz."
+        },
+        "vi": {
+          "title": "Bạn bình chọn, tôi thực hiện - Ngụy trang lịch",
+          "body": "Cảm ơn bạn đã bình chọn! Ngụy trang lịch đã có trong Premium: Lockify có thể trông và hoạt động như một ứng dụng lịch thật, và chỉ ngày bí mật của bạn mới mở được kho. Tiếp theo tôi đang xây dựng tính năng Ẩn ứng dụng, để bạn có thể giữ các ứng dụng đã chọn khỏi màn hình chính."
+        },
+        "pt-BR": {
+          "title": "Você votou, eu entreguei - Disfarce de calendário",
+          "body": "Obrigado por votar! O Disfarce de calendário já está disponível no Premium: o Lockify pode parecer e funcionar como um app de calendário de verdade, e só a sua data secreta abre o cofre. O próximo recurso que estou construindo é Ocultar apps, para você manter os apps escolhidos fora da tela inicial."
+        }
+      }
+    },
     {
       "id": "feature-poll",
       "date": "Sep 2026",
