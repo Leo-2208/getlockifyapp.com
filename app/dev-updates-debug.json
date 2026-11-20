@@ -1,6 +1,6 @@
 {
   "contentVersion": 5,
-  "minVersionCode": 0,
+  "minVersionCode": 100,
   "buildType": "debug",
   "updatesUrl": "https://getlockifyapp.com/updates",
   "updates": [
